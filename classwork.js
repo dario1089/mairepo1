@@ -52,7 +52,7 @@ var randomPoint = function(){
 //
 
 var arrayRandom = function(){
-	var array;
+	var array = [];
 
 	for (var i = 0; i < 100; i++) {
 		array.push(randomPoint());
