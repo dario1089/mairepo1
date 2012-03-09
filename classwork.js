@@ -44,7 +44,19 @@ var filtPosSum = function(array){
 
 
 var randomPoint = function(){
-	var x = (Math.random()*200) - 100;
-	var y = (Math.random()*200) - 100;
-	return new Point(x,y);
+	var x = (Math.random() * 200) - 100;
+	var y = (Math.random() * 200) - 100;
+	return new Point(x, y);
+}
+
+//
+
+var arrayRandom = function(){
+	var array;
+
+	for (var i = 0; i < 100; i++) {
+		array.push(randomPoint());
+	};
+
+	return array;
 }
