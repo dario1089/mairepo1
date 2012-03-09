@@ -51,10 +51,10 @@ var randomPoint = function(){
 
 //
 
-var arrayRandom = function(){
+var arrayRandom = function(number){
 	var array = [];
 
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < number; i++) {
 		array.push(randomPoint());
 	};
 
