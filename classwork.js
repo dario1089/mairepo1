@@ -1,10 +1,11 @@
 function Point(x,y){
 	this.x=x;
 	this.y=y;
-	this.getDistance = function(p2){
+}
+
+Point.prototype.getDistanceFromPoint = function(p2){
 		return Math.sqrt(Math.pow((p2.x - this.x),2)+Math.pow((p2.y - this.y),2));
 	};
-}
 
 Point.prototype.translate = function(dx, dy){
 	this.x = this.x + dx;
@@ -12,20 +13,31 @@ Point.prototype.translate = function(dx, dy){
 	return this;
 }
 
-//passo funzione come parametro e verifico se il punto è sopra, sotto, o sulla retta rappresentata dalla funzione
-
 Point.prototype.pointMembership = function(rect){
 	if(rect(this.x,this.y) > 0) return 1;
 	else if(rect(this.x, this.y) == 0) return 0;
 	else return -1;
 }
 
-Point.prototype.distance = function(line){
+Point.prototype.getDistanceFromLine = function(line){
 	var num = Math.abs(line.a*this.x + line.b * this.y + line.c)
 	var den = Math.sqrt(line.a * line.a + line.b * line.b);
 	return num/den;
-}
-//
+};
+
+Point.prototype.getDistance = function(x){
+	if(x instanceof Point)
+		return getDistanceFromPoint(x);
+
+	if(x instanceof Line)
+		return getDistanceFromLine(x);
+
+	throw new Error("x is not a Point nor a Line");
+};
+
+//end Point
+
+//Triangle
 
 function Triangle(p1,p2,p3){
 	this.p1 = p1;
@@ -45,8 +57,31 @@ function Triangle(p1,p2,p3){
 	};
 }
 
-//
+Triangle.prototype.above = function(line){
+	var fpa = (line.a * this.p1.x + line.b * this.p1.y + line.c) > 0; 
+	var spa = (line.a * this.p2.x + line.b * this.p2.y + line.c) > 0; 
+	var tpa = (line.a * this.p3.x + line.b * this.p3.y + line.c) > 0; 
 
+	return fpa && spa && tpa;
+}
+
+Triangle.prototype.below = function(line){
+	var fpb = (line.a * this.p1.x + line.b * this.p1.y + line.c) < 0; 
+	var spb = (line.a * this.p2.x + line.b * this.p2.y + line.c) < 0; 
+	var tpb = (line.a * this.p3.x + line.b * this.p3.y + line.c) < 0; 
+
+	return fpb && spb && tpb;
+}
+
+Triangle.prototype.intersect = function(line){
+	return !this.above(line) && !this.below(line);
+}
+
+
+
+//end Triangle
+
+//
 var filtPosSum = function(array){
 	var temp = array.filter(function(item,index,array){return item>0});
 	return temp.reduce(function(prev,current){return prev+current});
@@ -82,7 +117,7 @@ var filterPosPoints = function(array){
 	});
 }
 
-// line
+// Line
 
 var Line = function(a, b, c){
 this.a = a;
