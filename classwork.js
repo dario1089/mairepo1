@@ -21,8 +21,8 @@ Point.prototype.pointMembership = function(rect){
 }
 
 Point.prototype.distance = function(line){
-	var num = Math.abs(line.a*this.x + line.b + this.y + line.c)
-	var den = Math.sqrt(line.a * line.a + line.b*line.b);
+	var num = Math.abs(line.a*this.x + line.b * this.y + line.c)
+	var den = Math.sqrt(line.a * line.a + line.b * line.b);
 	return num/den;
 }
 //
