@@ -12,6 +12,19 @@ Point.prototype.translate = function(dx, dy){
 	return this;
 }
 
+//passo funzione come parametro e verifico se il punto è sopra, sotto, o sulla retta rappresentata dalla funzione
+
+Point.prototype.pointMembership = function(rect){
+	if(rect(this.x,this.y) > 0) return 1;
+	else if(rect(this.x, this.y) == 0) return 0;
+	else return -1;
+}
+
+Point.prototype.distance = function(line){
+	var num = Math.abs(line.a*this.x + line.b + this.y + line.c)
+	var den = Math.sqrt(line.a * line.a + line.b*line.b);
+	return num/den;
+}
 //
 
 function Triangle(p1,p2,p3){
@@ -68,3 +81,11 @@ var filterPosPoints = function(array){
 		return (item.y - item.x) >=0;
 	});
 }
+
+// line
+
+var Line = function(a, b, c){
+this.a = a;
+this.b = b;
+this.c = c;
+};
