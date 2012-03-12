@@ -64,11 +64,7 @@ var arrayRandom = function(number){
 //filtrare punti del semipiano positivo in un array definito dalla bisettrice primo e terzo quadrante
 
 var filterPosPoints = function(array){
-	var ret = [];
-	array.filter(function(item){
-		if((item.y - item.x) >=0)
-			ret.push(item);
+	return array.filter(function(item){
+		return (item.y - item.x) >=0;
 	});
-
-	return ret;
 }
