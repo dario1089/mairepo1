@@ -37,3 +37,18 @@ var compnVar = function(funArray){
 		return fun(args);
 	}
 }
+ 
+var cons = function(funArray){
+	return function(arg){
+		var ret = [];
+		for (var i = 0; i < funArray.length; i++){
+			ret.push(funArray[i](arg))	}
+		return ret;
+	}
+}
+
+var distributeLeft = function(array){
+	return function(x){
+		return array.map(function(item){return [x,item]})
+}
+}
