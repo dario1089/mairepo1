@@ -17,6 +17,23 @@ var comp2 = function(funArray){
 	return function(arg){
 		var f = funArray[0];
 		var g = funArray[1];
-		return f((g)(arg));
+		return f(g(arg));
+	}
+}
+
+var compn = function(funArray){
+	return function(args){
+		var fun = funArray.reduce(function(prev,curr){
+			return function(x){
+				return prev(curr(x))}})
+		return fun(args);
+	}
+}
+
+var compnVar = function(funArray){
+	return function(args){
+		var fun = funArray.reduce(function(prev,curr){return comp2([prev,curr])})
+			
+		return fun(args);
 	}
 }
