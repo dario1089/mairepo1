@@ -52,3 +52,14 @@ var distributeLeft = function(array){
 		return array.map(function(item){return [x,item]})
 }
 }
+
+var trans = function(array){
+	var ret;
+	for (var i = 0; i < array.length; i++){
+		for (var j = 0; j < array[i].length; j++){
+
+			(ret[j] = ret[j] || [])[i] = array[i][j];
+		}
+	}
+	return ret;
+}
