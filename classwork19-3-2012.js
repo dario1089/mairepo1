@@ -4,3 +4,11 @@ var apply = function(array){
 
 	return fun(arg);
 }
+
+var aa = function(fun){
+	return function(array){
+		var ret;
+		ret = array.map(fun);
+		return ret;
+	}
+}
