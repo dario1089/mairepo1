@@ -12,3 +12,11 @@ var aa = function(fun){
 		return ret;
 	}
 }
+
+var comp2 = function(funArray){
+	return function(arg){
+		var f = funArray[0];
+		var g = funArray[1];
+		return f((g)(arg));
+	}
+}
