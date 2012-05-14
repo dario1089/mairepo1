@@ -74,14 +74,25 @@ var controls = [[0,0,0], [2,5,0],[7,3,0],[9,7,0],[12,2,0]];
 var knots = [0,0,0,1,2,3,3,3];
 var c1 = NUBS(S0)(2)(knots)(controls);
 var curve1 = MAP(c1)(domain);
-DRAW(curve1);
+//DRAW(curve1);
 
 var controls2 = [[0,0,0], [2,5,3],[7,3,6],[9,7,-2],[12,2,-3]];
 var knots2 = [0,0,0,1,2,3,3,3];
 var c2 = NUBS(S0)(2)(knots2)(controls2);
 var curve2 = MAP(c2)(domain);
-DRAW(curve2);
+//DRAW(curve2);
 
 var surface12 = BEZIER(S1)([c1, c2]);
 var s12 = MAP(surface12)(domainB);
-DRAW(s12);
+//DRAW(s12);
+
+//var sup1 = BEZIER(S1)([cpt0, cpt1]);
+//var sup2 = BEZIER(S1)([cpt3, cpt4]);
+//var domain3d = DOMAIN([[0,1],[0,1],[0,1]])([10,10,10]);
+//var solid = BEZIER(S2)([sup1, sup2]);
+//var solidBez = MAP(solid)(domain3d);
+//DRAW(solidBez);
+/////////////
+
+var body = R([0,2])([PI/2])(CYL_SURFACE([5,25])([100,100]));
+DRAW(body);
