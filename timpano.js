@@ -82,7 +82,7 @@ return knots;}
 var xBaseTimpano = 8.52;
 var zBaseTimpano = 3.55;
 var timpano = [];
-var pointsNS = [[0.2,0,0],[0.2,0.15,0],[0.15,0.2,0],[0.15,0.3,0],[0.2,0.4,0],[0.15,0.45,0],[0.15,0.55,0],[0.2,0.65,0],[0.1,0.72,0],[0.05,0.75,0],[0.05,0.85,0],[0.1,0.88,0],[0.2,0.9,0],[0.15,0.95,0],[0.15,1.05,0],[0.2,1.1,0],[0.2,1.5,0]];
+var pointsNS = [[0.2,0,0],[0.2,0.15,0],[0.15,0.2,0],[0.15,0.3,0],[0.2,0.4,0],[0.15,0.45,0],[0.15,0.55,0],[0.2,0.65,0],[0.1,0.72,0],[0.05,0.75,0],[0.05,0.85,0],[0.1,0.88,0],[0.2,0.9,0],[0.15,0.95,0],[0.15,1.05,0],[0.2,1.1,0],[0.2,1.51,0]];
 pointsNS = PointUtils.scalaPuntiY(pointsNS,0.5);
 var pointsNSR = PointUtils.ruotaPunti(pointsNS,-PI/4,1);
 var points = PointUtils.scalaPunti(pointsNS, SQRT(2));
@@ -94,7 +94,9 @@ points3 = PointUtils.traslaPunti(points3,2,zBaseTimpano);
 var points4 = PointUtils.ruotaPunti(pointsNSR,-PI/2-PI/4,1);
 points4 = PointUtils.traslaPunti(points4,0,xBaseTimpano);
 points4 = PointUtils.traslaPunti(points4,2,zBaseTimpano);
+////
 
+////
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -129,6 +131,7 @@ var hTriangolo = 2.5;
 var ipotenusa = SQRT((hTriangolo*hTriangolo) + (xBaseTriangolo/2*xBaseTriangolo/2));
 var alpha = Math.asin(hTriangolo/ipotenusa)+PI/4.8;
 var pointsNR = [[0,0,0.3],[0,0,0.1],[0,0.05,0.05],[0,0.1,0.1],[0,0.15,0.05],[0,0.2,0.1],[0,0.2,0.3]];
+pointsNR = PointUtils.traslaPunti(pointsNR,1,0.01);
 var points=PointUtils.ruotaPunti(pointsNR,-alpha,2);
 points = PointUtils.scalaPuntiY(points,1.5);
 var points2 = PointUtils.ruotaPunti(pointsNR,alpha,2);
@@ -138,11 +141,16 @@ var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
 var latoInferiore = BEZIER(S1)([profile,profile2]);
+
+var lateraleSottoP1 = points[0];
+var lateraleSottoP1L = points2[0];
+
 var curve = MAP(latoInferiore)(domain2d);
 cornice.push(curve);
 
 var punto1Sfondo = points[points.length-1];
 var punto2Sfondo = points2[points2.length-1];
+
 //lati superiori
 var points = [[0,0.1,0.4],[0,0.1,0.1],[0,0.1,0.05],[0,0.15,0.1],[0,0.2,0.1],[0,0.25,0.05],[0,0.3,0.1],[0,0.35,0],[0,0.4,0.05],[0,0.4,0.1],[0,0.4,0.4]];
 points = PointUtils.traslaPunti(points,1,-0.088);
@@ -158,8 +166,13 @@ var latoSuperiore1 = BEZIER(S1)([profile,profile2]);
 var latoSuperiore2 = BEZIER(S1)([profile3,profile2]);
 var curve = MAP(latoSuperiore1)(domain2d);
 var curve2 = MAP(latoSuperiore2)(domain2d);
+cornice.push(curve);
+cornice.push(curve2);
+var punto3Sfondo = points2[0];
 
-var zLaterale = zBaseTimpano - 0.55;
+//laterali
+//laterale1
+var zLaterale = zBaseTimpano - 0.3;
 var pointsLato1 = [[points[0][0],points[0][1],points[0][2]+zLaterale],[points[points.length-1][0],points[points.length-1][1],points[points.length-1][2]+zLaterale]];
 pointsLato1.push(pointsLato1[1])
 var profiloLato1 = NUBS(S0)(2)([0,0,0,1,1,1])(pointsLato1);
@@ -168,13 +181,38 @@ lato1 = MAP(lato1)(domain2d);
 var t = MAP(profiloLato1)(domain);
 cornice.push(lato1);
 var punto3Sfondo = points2[0];
+var lateraleSottoP2 = pointsLato1[0];
+var lateraleSotto = NUBS(S0)(2)([0,0,0,1,1,1])([lateraleSottoP2,lateraleSottoP1,lateraleSottoP1]);
 
-cornice.push(curve);
-cornice.push(curve2);
+var lateraleSopraP1 = [lateraleSottoP1[0]+0.4,lateraleSottoP1[1],lateraleSottoP1[2]];
+var lateraleSopraP2 = [lateraleSottoP2[0]+0.4,lateraleSottoP2[1],lateraleSottoP2[2]];
+var lateraleSopra = NUBS(S0)(2)([0,0,0,1,1,1])([lateraleSopraP2,lateraleSopraP2,lateraleSopraP1]); 
+var laterale = BEZIER(S1)([lateraleSopra,lateraleSotto]);
+laterale = MAP(laterale)(domain2d);
+cornice.push(laterale);
+
+//laterale2
+var pointsLato1 = [[points3[0][0],points3[0][1],points3[0][2]+zLaterale],[points3[points3.length-1][0],points3[points3.length-1][1],points3[points3.length-1][2]+zLaterale]];
+pointsLato1.push(pointsLato1[1])
+var profiloLato1 = NUBS(S0)(2)([0,0,0,1,1,1])(pointsLato1);
+var lato1 = BEZIER(S1)([profiloLato1,profile3]);
+lato1 = MAP(lato1)(domain2d);
+var t = MAP(profiloLato1)(domain);
+cornice.push(lato1);
+
+var lateraleSottoP2L = pointsLato1[0];
+var lateraleSotto = NUBS(S0)(2)([0,0,0,1,1,1])([lateraleSottoP2L,lateraleSottoP1L,lateraleSottoP1L]);
+
+var lateraleSopraP1 = [lateraleSottoP1L[0]-0.4,lateraleSottoP1L[1],lateraleSottoP1L[2]];
+var lateraleSopraP2 = [lateraleSottoP2L[0]-0.4,lateraleSottoP2L[1],lateraleSottoP2L[2]];
+var lateraleSopra = NUBS(S0)(2)([0,0,0,1,1,1])([lateraleSopraP2,lateraleSopraP2,lateraleSopraP1]); 
+var laterale = BEZIER(S1)([lateraleSopra,lateraleSotto]);
+laterale = MAP(laterale)(domain2d);
+cornice.push(laterale);
+
 cornice = STRUCT(cornice);
 cornice = T([0,1,2])([-0.13,0.75,-0.1])(cornice);
 timpano.push(cornice);
-
 //cubetti
 var xCubo = 0.1;
 var yCubo = 0.15;
