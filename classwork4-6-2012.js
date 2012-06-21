@@ -9,7 +9,9 @@ var makeKnots = function(points){
 return knots;}
 
 var lateral = function(){
-	var hBase = 0.3;
+	var domain2d = DOMAIN([[0,1],[0,1]])([80,10]);
+
+	var hBase = 0.4;
 	var xBase = 0.5;
 	var zBase = 1.9;
 	var base = [];
@@ -21,15 +23,65 @@ var lateral = function(){
 	base.push(base3);
 	var base4 = T([0])([7.72])(base3);
 	base.push(base4);
-	var hPillar = 2;
-	var spacePillars = 0.9;
+	var hPillar = 2.3;
+	var spacePillars = 0.8;
 	var zPillar=(zBase-0.05- spacePillars) / 2; 
 	var pillars = SIMPLEX_GRID([[-0.14,xBase-0.1],[-3-hBase-0.4,hPillar],[-4.15,zPillar,-spacePillars,zPillar]])
 	base.push(pillars);
+	var pillars2 = T([0])([7.72])(pillars);
+	base.push(pillars2);
 	var baseMiddlePillars = SIMPLEX_GRID([[-0.09,xBase],[-3-hBase-0.4-hPillar,hBase],[-4.1,zPillar+0.1,-spacePillars+0.1,zPillar+0.05]]);
 	base.push(baseMiddlePillars);
-	base = STRUCT(base);
-	return base;
+	var baseMiddlePillars2 = T([0])([7.72])(baseMiddlePillars);
+	base.push(baseMiddlePillars2);
+
+var arcoLaterale = [];
+var pointsArco1 = [[0,0,0],[0.05,0.5,0],[spacePillars-0.05,0.5,0],[spacePillars,0,0]];
+var knots = makeKnots(pointsArco1);
+var curve = NUBS(S0)(2)(knots)(pointsArco1);
+
+var hArco = 1;
+var points = [[0,hArco,0],[spacePillars,hArco,0],[spacePillars,hArco,0]];
+var curve2 = NUBS(S0)(2)([0,0,0,1,1,1])(points);
+
+var arco = BEZIER(S1)([curve,curve2]);
+var arco1 = MAP(arco)(domain2d);
+arcoLaterale.push(arco1);
+var arco2 = T([2])([xBase-0.1])(arco1);
+arcoLaterale.push(arco2);
+var zPezzo = xBase;
+points = [[0.375,0.49,-0.05],[0.525,0.49,-0.05],[0.625,hArco,-0.05],[0.275,hArco,-0.05]];
+var points2 = points.map(function(p){return [p[0], p[1], p[2]+zPezzo]});
+points = points.concat(points2);
+
+var pezzo = SIMPLICIAL_COMPLEX(points)([[0,1,2,3],[4,0,3,7],[1,5,6,2],[3,2,6,7],[5,4,7,6],[4,5,1,0]]);
+var pezzo = T([0])([-0.05])(pezzo);
+arcoLaterale.push(pezzo);
+
+var pointsArco2 = pointsArco1.map(function(p){return [p[0],p[1],p[2]+(xBase-0.1)]});
+knots = makeKnots(pointsArco2);
+curve2 = NUBS(S0)(2)(knots)(pointsArco2);
+var volta = BEZIER(S1)([curve,curve2]);
+volta = MAP(volta)(domain2d);
+arcoLaterale.push(volta);
+
+var zBase = 1.9;
+var hPillar2= hArco;
+hBase = 0.3;
+var pillar = SIMPLEX_GRID([[-spacePillars,zPillar],[hPillar2],[xBase-0.1]]);
+arcoLaterale.push(pillar);
+var pillar2 = T([0])([-spacePillars-zPillar])(pillar);
+arcoLaterale.push(pillar2);
+
+arcoLaterale = STRUCT(arcoLaterale);
+arcoLaterale = R([0,2])([PI/2])(arcoLaterale);
+arcoLaterale = T([0,1,2])([0.14,3+hBase+0.4+hPillar+hBase+0.2,4.15+spacePillars+zPillar])(arcoLaterale);
+base.push(arcoLaterale);
+var arcoLaterale2 = T([0])([7.72])(arcoLaterale);
+base.push(arcoLaterale2);
+base = S([2])([1.45])(STRUCT(base));
+base = T([2])([-1.8])(base);
+return base;
 }
 
 var base = function(){
@@ -104,17 +156,17 @@ var solid3 = SIMPLEX_GRID([[0.3],[-1, 1.7],[-0.1,5.8]]);
 var solid4 = SIMPLEX_GRID([[0.3],[-2.7,0.3],[-0.05,5.9]]);
 var solid = STRUCT([solid1,solid2,solid3,solid4]);
 
-var solid1 = SIMPLEX_GRID([[-2,0.6],[0.6],[6]]);
-var solid2 = SIMPLEX_GRID([[-2,0.6],[-0.6,0.4],[-0.05,5.9]]);
-var solid3 = SIMPLEX_GRID([[-2,0.6],[-1, 1.7],[-0.1,5.8]]);
-var solid4 = SIMPLEX_GRID([[-2,0.6],[-2.7,0.3],[-0.05,5.9]]);
+var solid1 = SIMPLEX_GRID([[-2,1.5],[0.6],[6]]);
+var solid2 = SIMPLEX_GRID([[-2,1.5],[-0.6,0.4],[-0.05,5.9]]);
+var solid3 = SIMPLEX_GRID([[-2,1.5],[-1, 1.7],[-0.1,5.8]]);
+var solid4 = SIMPLEX_GRID([[-2,1.5],[-2.7,0.3],[-0.05,5.9]]);
 var solid5 = SIMPLEX_GRID([[-0.3,1.7],[-2.7,0.3],[-0.05,5.9]]);
 var solid2 = STRUCT([solid1,solid2,solid3,solid4,solid5]);
 
 var tunnel = STRUCT([solid,solid2,roof,upperlayer]);
 
 tunnel = R([0,2])([PI/2])(tunnel);
-tunnel = T([2])([6])(tunnel);
+tunnel = T([2])([6.9])(tunnel);
 
 var base = S([0])([1.4])(STRUCT([tunnel,steps,stepsBorder]));
 return base;}
