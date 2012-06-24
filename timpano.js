@@ -89,11 +89,12 @@ var points = PointUtils.scalaPunti(pointsNS, SQRT(2));
 points = PointUtils.ruotaPunti(points,-PI/4,1);
 var points2 = PointUtils.ruotaPunti(points,-PI/2,1);
 points2 = PointUtils.traslaPunti(points2,0,xBaseTimpano);
-var points3 = PointUtils.ruotaPunti(pointsNSR,PI/4,1);
+var points3 = PointUtils.ruotaPunti(pointsNSR,+ PI/4,1);
 points3 = PointUtils.traslaPunti(points3,2,zBaseTimpano);
 var points4 = PointUtils.ruotaPunti(pointsNSR,-PI/2-PI/4,1);
 points4 = PointUtils.traslaPunti(points4,0,xBaseTimpano);
 points4 = PointUtils.traslaPunti(points4,2,zBaseTimpano);
+var pointsCornicione1 = pointsNSR;
 ////
 
 ////
@@ -115,6 +116,16 @@ timpano.push(surface);
 timpano.push(surface2);
 timpano.push(surface3);
 
+//cornicione
+pointsCornicione1 = PointUtils.ruotaPunti(pointsCornicione1,0,1);
+pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,2,zBaseTimpano-0.15);
+pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,0,0.1);
+var pointsCornicione2 = PointUtils.traslaPunti(pointsCornicione1,0,-3.8);
+var profileCornicione1 = NUBS(S0)(2)(knots)(pointsCornicione1);
+var profileCornicione2 = NUBS(S0)(2)(knots)(pointsCornicione2);
+var cornicione = BEZIER(S1)([profileCornicione1,profileCornicione2]);
+cornicione = MAP(cornicione)(domain2d);
+timpano.push(cornicione);
 //spessore
 var spessore = SIMPLEX_GRID([[-0.2,xBaseTimpano-0.4],[0.05],[-0.2,0.366]]);
 timpano.push(spessore);
@@ -168,13 +179,22 @@ var curve = MAP(latoSuperiore1)(domain2d);
 var curve2 = MAP(latoSuperiore2)(domain2d);
 cornice.push(curve);
 cornice.push(curve2);
+
 var punto3Sfondo = points2[0];
 
+var zLaterale = zBaseTimpano - 0.3;
+var tettoPunto1 = points[points.length-1];
+var tettoPunto2 = points2[points2.length-1];
+var tettoPunto3 = [tettoPunto2[0],tettoPunto2[1],tettoPunto2[2]+zLaterale];
+var tetto2Punto1 = points3[points3.length-1];
 //laterali
 //laterale1
-var zLaterale = zBaseTimpano - 0.3;
+
 var pointsLato1 = [[points[0][0],points[0][1],points[0][2]+zLaterale],[points[points.length-1][0],points[points.length-1][1],points[points.length-1][2]+zLaterale]];
-pointsLato1.push(pointsLato1[1])
+pointsLato1.push(pointsLato1[1]);
+
+var tettoPunto4 = pointsLato1[1];
+
 var profiloLato1 = NUBS(S0)(2)([0,0,0,1,1,1])(pointsLato1);
 var lato1 = BEZIER(S1)([profiloLato1,profile]);
 lato1 = MAP(lato1)(domain2d);
@@ -193,7 +213,8 @@ cornice.push(laterale);
 
 //laterale2
 var pointsLato1 = [[points3[0][0],points3[0][1],points3[0][2]+zLaterale],[points3[points3.length-1][0],points3[points3.length-1][1],points3[points3.length-1][2]+zLaterale]];
-pointsLato1.push(pointsLato1[1])
+pointsLato1.push(pointsLato1[1]);
+var tetto2Punto4 = pointsLato1[1];
 var profiloLato1 = NUBS(S0)(2)([0,0,0,1,1,1])(pointsLato1);
 var lato1 = BEZIER(S1)([profiloLato1,profile3]);
 lato1 = MAP(lato1)(domain2d);
@@ -213,6 +234,7 @@ cornice.push(laterale);
 cornice = STRUCT(cornice);
 cornice = T([0,1,2])([-0.13,0.75,-0.1])(cornice);
 timpano.push(cornice);
+
 //cubetti
 var xCubo = 0.1;
 var yCubo = 0.15;
@@ -223,7 +245,7 @@ var space = (xBaseTimpano- 0.45 - xCubo*nCubi)/(nCubi-1);
 var cubo = CUBOID([xCubo,yCubo,zCubo]);
 var t = T([0])([space+xCubo]);
 var cubetti = STRUCT(REPLICA(nCubi)([cubo,t]));
-cubetti = T([0,1,2])([0.15+0.06,8.05-7.465,3.42-3.35])(cubetti);
+cubetti = T([0,1,2])([0.15+0.06,8.08-7.465,3.44-3.35])(cubetti);
 timpano.push(cubetti);
 
 //sfondo
@@ -242,11 +264,35 @@ var space = (ipotenusa + 1 - xCubo*nCubi)/(nCubi-1);
 var tx = space*SIN(alpha-PI/24);
 var ty = space*COS(alpha-PI/24);
 var t = T([0,1])([-tx,-ty]);
-var cubetti = STRUCT(REPLICA(nCubi)([cubo,t]));
+var cubetti = T([0,1,2])([0.06,-7.465,-3.35])(STRUCT(REPLICA(nCubi)([cubo,t])));
 var t2 = T([0,1])([tx,-ty]);
-var cubetti2 = STRUCT(REPLICA(nCubi)([cubo,t2]));
-DRAW(cubetti);
-DRAW(cubetti2)
+var cubetti2 = T([0,1,2])([0.06,-7.465,-3.35])(STRUCT(REPLICA(nCubi)([cubo,t2])));
+timpano.push(cubetti);
+timpano.push(cubetti2);
+
+//cubetti laterali
+var xCubo = 0.1;
+var yCubo = 0.15;
+var zCubo = 0.1;
+var nCubi = 15;
+var space = (zBaseTimpano- 0.27 - xCubo*nCubi)/(nCubi-1);
+
+var cubo = CUBOID([xCubo,yCubo,zCubo]);
+cubo = T([0,1,2])([0.15+0.06-xCubo-0.02,8.08-7.465,3.42-3.35+zCubo+0.05])(cubo);
+var tz = T([2])([space+zCubo]);
+var cubettiLaterali1 = STRUCT(REPLICA(nCubi)([cubo,tz]));
+timpano.push(cubettiLaterali1);
+var cubettiLaterali2 = T([0])([xBaseTimpano + xCubo - 0.38])(cubettiLaterali1);
+timpano.push(cubettiLaterali2);
+
+//tetto
+var tetto = SIMPLICIAL_COMPLEX([tettoPunto1,tettoPunto2,tettoPunto3,tettoPunto4,tettoPunto1])([[0,1,3],[2,3,1]]);
+var tetto2 = SIMPLICIAL_COMPLEX([tetto2Punto1,tettoPunto2,tettoPunto3,tetto2Punto4,tetto2Punto1])([[0,1,3],[2,3,1]]);
+tetto = STRUCT([tetto,tetto2]);
+tetto = T([0,1,2])([-0.13,0.75,-0.1])(tetto);
+tetto = COLOR([100/255,34/255,34/255])(tetto);
+timpano.push(tetto);
 timpano = STRUCT(timpano);
 timpano = T([0,1,2])([-0.06,7.465,3.35])(timpano);
+
 DRAW(timpano);
