@@ -255,4 +255,5 @@ finestra.push(glasses);
 finestra = STRUCT(finestra);
 
 finestra = S([0,1,2])([1/20,1/20,1/20])(finestra);
+
 DRAW(finestra);

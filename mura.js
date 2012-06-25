@@ -1,7 +1,9 @@
-var buildFinestra = function(){
 	var domain = INTERVALS(1)(80);
-var domain2d = DOMAIN([[0,1],[0,1]])([80,10]);
+var domain2d = DOMAIN([[0,1],[0,1]])([50,1]);
 var domain3d = DOMAIN([[0,1],[0,1],[0,1]])([80,10,1]);
+
+var buildFinestra = function(){
+
 
 var PointUtils = function() {};
 
@@ -267,16 +269,61 @@ var yWin = 2.25;
 var hMuro = 11.5;
 var sFinestra
 var muro = [];
+var xNow=0
 var muro1 = SIMPLEX_GRID([[spesMuro],[hMuro],[-6.9,0.01]]);
 var muro3 = SIMPLEX_GRID([[-spesMuro,0.01],[hMuro],[-6.9,spesMuro]]);
 var muro2 = SIMPLEX_GRID([[-spesMuro-0.01,xWin],[2/17*hMuro,-yGrata, 2.65/17*hMuro, -yWin + 0.05,4.6/17*hMuro + yGrata, -1.2*yGrata,1.1/17*hMuro],[-6.9,spesMuro]]);
+xNow = spesMuro+0.01 + xWin;
 muro.push(muro1);
 muro.push(muro2);
 muro.push(muro3);
 var muro4 = SIMPLEX_GRID([[-spesMuro - 0.01 - xWin, 2.6*spesMuro],[hMuro],[-6.9,spesMuro]]);
+xNow+= 2.6*spesMuro;
 muro.push(muro4);
-var muro5 = SIMPLEX_GRID([[-spesMuro - xWin - 0.01 - 2.6*spesMuro, xWin],[2/17*hMuro,yGrata, 2.7/17*hMuro, -yWin,2/17*hMuro, -yGrata,2.5/17*hMuro, -1.2*yGrata,1.05/17*hMuro],[-6.9,spesMuro]]);
+xWin2 = xWin - 0.1;
+var muro5 = SIMPLEX_GRID([[-spesMuro - xWin - 0.01 - 2.6*spesMuro, xWin2],[2/17*hMuro,yGrata, 2.7/17*hMuro, -2/3*yWin,2/17*hMuro + 1/3*yWin, -yGrata,2.5/17*hMuro, -1.2*yGrata,1.05/17*hMuro],[-6.9,spesMuro]]);
+xNow+= xWin2; 
 muro.push(muro5);
+
+
+var muro6 = SIMPLEX_GRID([[-xNow,xWin2],[hMuro],[-6.9,spesMuro]]);
+xNow+=xWin2;
+muro.push(muro6);
+var muro7 = SIMPLEX_GRID([[-xNow , xWin2],[2/17*hMuro,yGrata, 2.7/17*hMuro, -2/3*yWin,2/17*hMuro+ 1/3*yWin, -yGrata,2.5/17*hMuro, +1.2*yGrata,1.05/17*hMuro],[-6.9,spesMuro]]);
+xNow+=xWin2;
+muro.push(muro7);
+var muro8 = SIMPLEX_GRID([[-xNow,0.5],[hMuro],[-6.9,spesMuro]]);
+xNow+=0.5;
+muro.push(muro8);
+var largPorta = 1.6;
+var muro9 = SIMPLEX_GRID([[-xNow,largPorta],[3,-yWin*1.5, (hMuro-3 - yWin*1.5)],[-6.9,spesMuro]]);
+muro.push(muro9);
+xNow+=largPorta;
+var muro10 = SIMPLEX_GRID([[-xNow,0.5],[hMuro],[-6.9,spesMuro]]);
+muro.push(muro10);
+xNow+=0.5;
+var muro11 = SIMPLEX_GRID([[-xNow , xWin2],[2/17*hMuro,yGrata, 2.7/17*hMuro, -2/3*yWin,2/17*hMuro+ 1/3*yWin, -yGrata,2.5/17*hMuro, +1.2*yGrata,1.05/17*hMuro],[-6.9,spesMuro]]);
+muro.push(muro11);
+xNow+=xWin2;
+var muro12 = SIMPLEX_GRID([[-xNow,xWin2],[hMuro],[-6.9,spesMuro]]);
+muro.push(muro12);
+xNow+=xWin2;
+var muro13 = SIMPLEX_GRID([[-xNow, xWin2],[2/17*hMuro,yGrata, 2.7/17*hMuro, -2/3*yWin,2/17*hMuro + 1/3*yWin, -yGrata,2.5/17*hMuro, -1.2*yGrata,1.05/17*hMuro],[-6.9,spesMuro]]);
+muro.push(muro13);
+xNow+=xWin2;
+var muro14 = SIMPLEX_GRID([[-xNow, 2.6*spesMuro],[hMuro],[-6.9,spesMuro]]);
+xNow+=2.6*spesMuro;
+muro.push(muro14);
+var muro14 = SIMPLEX_GRID([[-xNow,xWin],[2/17*hMuro,-yGrata, 2.65/17*hMuro, -yWin + 0.05,4.6/17*hMuro + yGrata, -1.2*yGrata,1.1/17*hMuro],[-6.9,spesMuro]]);
+xTraslazioneFin = xNow;
+xNow+= xWin;
+var muro15 = SIMPLEX_GRID([[-xNow,0.01],[hMuro],[-6.9,spesMuro]]);
+xNow+= 0.01;
+var muro16 = SIMPLEX_GRID([[-xNow,spesMuro],[hMuro],[-6.9,0.01]]);
+muro.push(muro14);
+muro.push(muro15);
+muro.push(muro16);
+
 var decMuro1 = SIMPLEX_GRID([[spesMuro + xWin + 2*spesMuro],[-3,0.4],[-6.89,0.01]]);
 muro.push(decMuro1);
 var decMuro2 = SIMPLEX_GRID([[spesMuro + xWin + 2*spesMuro],[-2.7,0.3],[-6.86,0.04]]);
@@ -290,6 +337,19 @@ var sFinestraZ = 0.3;
 finestra1 = S([0,1,2])([sFinestraX,sFinestraY,sFinestraZ])(finestra1);
 finestra1 = T([0,1,2])([0.85,2/17*hMuro+yGrata + 2/17*hMuro + yWin + 0.2 + 0.4,6.8])(finestra1);
 muro.push(finestra1);
+
+var finestra2 = T([0])([xTraslazioneFin - xWin - 0.2])(finestra1);
+muro.push(finestra2);
 muro = STRUCT(muro);
 muro = T([0])([-spesMuro - 2/20*xMura + 0.4])(muro);
+var xBaseTimpano = 8.52;
+var muroLeft = R([0,2])([-PI/2])(muro);
+muroLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.45])(muroLeft);
+var muroRight = R([0,2])([PI/2])(muro);
+muroRight = T([0,2])([-xBaseTimpano-1.98,3.8+xBaseTimpano/2 + 10.86 ])(muroRight);
+//var muroDietro = R([0,2])([PI])(muro);
+//muroDietro = T([2])([(3.8+xBaseTimpano/2 + 2.45)*2])(muroDietro);
 DRAW(muro);
+DRAW(muroLeft);
+DRAW(muroRight);
+//DRAW(muroDietro);
