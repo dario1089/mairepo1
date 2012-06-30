@@ -3,6 +3,7 @@ var domain2d = DOMAIN([[0,1],[0,1]])([50,1]);
 var domain = INTERVALS(1)(20);
 var domainR = DOMAIN([[0,1],[0,2*PI]])([40,30]);
 var xBaseTimpano = 8.52;
+var bColor = [1,1,0.9];
 
 
 var PointUtils = function() {};
@@ -90,6 +91,7 @@ var curve = NUBS(S0)(2)(knots)(points);
 var mappingBase = ROTATIONAL_SURFACE(curve);
 var base = R([1,2])([-PI/2])(MAP(mappingBase)(domainR));
 base = T([0,1,2])([4.5,-43,2.5])(base);
+base = COLOR(bColor)(base);
 return base;
 }
 
@@ -216,6 +218,7 @@ var capital = STRUCT(capital);
 
 var capital = S([0,1,2])([0.3,0.15,0.3])(capital);
 capital = T([1])([-0.77])(capital);
+capital = COLOR(bColor)(capital);
 return capital;
 }
 
@@ -227,8 +230,9 @@ var points = [[rColumn, 0, 0],[rColumn*6.3/5,0,1/3*hColumn],[rColumn,0,hColumn]]
 var pColumn = NUBS(S0)(2)([0,0,0,1,1,1])(points);
 var mappingColumn = ROTATIONAL_SURFACE(pColumn);
 var column = S([0,1,2])([10,10,10])(MAP(mappingColumn)(domainR));
-var column = R([1,2])([-PI/2])(column);
-var column = T([0,1,2])([4.5,-40-0.8,2.5])(column);
+column = R([1,2])([-PI/2])(column);
+column = T([0,1,2])([4.5,-40-0.8,2.5])(column);
+column = COLOR(bColor)(column);
 return column;
 }
 
@@ -269,6 +273,7 @@ var tunnel = STRUCT([solid,solid2,roof,upperlayer]);
 
 tunnel = R([0,2])([PI/2])(tunnel);
 tunnel = T([2])([6.9])(tunnel);
+tunnel = COLOR(bColor)(tunnel);
 return tunnel;
 }
 
@@ -344,6 +349,7 @@ var lateralArchway2 = T([0])([7.72])(lateralArchway);
 base.push(lateralArchway2);
 base = S([2])([1.45])(STRUCT(base));
 base = T([2])([-1.8])(base);
+base = COLOR(bColor)(base);
 return base;
 }
 
@@ -398,7 +404,7 @@ var steps = STRUCT(REPLICA(nSteps)([steps1,trans]))
 var tunnel = buildTunnel();
 
 var steps = S([0])([1.4])(STRUCT([tunnel,steps,stepsBorder]));
-
+steps = COLOR(bColor)(steps);
 return steps;}
 
 var buildColumnade = function(){
@@ -416,6 +422,7 @@ column = S([0,1,2])([0.07,0.1,0.07])(column);
 column = T([0,1,2])([0.1,7.35,3.55])(column);
 var t = T([0])([1.52]);
 var columnade = STRUCT([column,t,column,t,column,t,column,t,column,t,column]);
+columnade = COLOR(bColor)(columnade);
 return columnade;}
 
 var buildTimpano = function(){
@@ -435,7 +442,6 @@ points3 = PointUtils.traslaPunti(points3,2,zBaseTimpano);
 var points4 = PointUtils.ruotaPunti(pointsNSR,-PI/2-PI/4,1);
 points4 = PointUtils.traslaPunti(points4,0,xBaseTimpano);
 points4 = PointUtils.traslaPunti(points4,2,zBaseTimpano);
-var pointsCornicione1 = pointsNSR;
 ////
 
 ////
@@ -457,25 +463,6 @@ timpano.push(surface);
 timpano.push(surface2);
 timpano.push(surface3);
 
-//cornicione
-pointsCornicioneLeft1 = PointUtils.ruotaPunti(pointsCornicione1,-PI/2,1);
-pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,2,zBaseTimpano-0.15);
-pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,0,0.1);
-var pointsCornicione2 = PointUtils.traslaPunti(pointsCornicione1,0,-3.8);
-var profileCornicione1 = NUBS(S0)(2)(knots)(pointsCornicione1);
-var profileCornicione2 = NUBS(S0)(2)(knots)(pointsCornicione2);
-var cornicione = BEZIER(S1)([profileCornicione1,profileCornicione2]);
-cornicione = MAP(cornicione)(domain2d);
-timpano.push(cornicione);
-//cornicione left
-pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,2,zBaseTimpano-0.15);
-pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,xBaseTimpano-0.1);
-var pointsCornicioneLeft2 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,3.8);
-var profileCornicioneLeft1 = NUBS(S0)(2)(knots)(pointsCornicioneLeft1);
-var profileCornicioneLeft2 = NUBS(S0)(2)(knots)(pointsCornicioneLeft2);
-var cornicioneLeft = BEZIER(S1)([profileCornicioneLeft1,profileCornicioneLeft2]);
-cornicioneLeft = MAP(cornicioneLeft)(domain2d);
-timpano.push(cornicioneLeft);
 //spessore
 var spessore = SIMPLEX_GRID([[-0.2,xBaseTimpano-0.4],[0.05],[-0.2,0.366]]);
 timpano.push(spessore);
@@ -639,31 +626,108 @@ var tetto2 = SIMPLICIAL_COMPLEX([tetto2Punto1,tettoPunto2,tettoPunto3,tetto2Punt
 tetto = STRUCT([tetto,tetto2]);
 tetto = T([0,1,2])([-0.13,0.75,-0.1])(tetto);
 tetto = COLOR([100/255,34/255,34/255])(tetto);
-timpano.push(tetto);
 timpano = STRUCT(timpano);
+timpano = COLOR(bColor)(timpano);
+timpano = STRUCT([timpano,tetto]);
 timpano = T([0,1,2])([-0.06,7.465,3.35])(timpano);
-
 return timpano;
+}
+
+var buildCorniceDown = function(){
+var zBaseTimpano = 3.55;
+var corniceDown = [];
+var pointsNS = [[0.2,0,0],[0.2,0.15,0],[0.15,0.2,0],[0.15,0.3,0],[0.2,0.4,0],[0.15,0.45,0],[0.15,0.55,0],[0.2,0.65,0],[0.1,0.72,0],[0.05,0.75,0],[0.05,0.85,0],[0.1,0.88,0],[0.2,0.9,0],[0.15,0.95,0],[0.15,1.05,0],[0.2,1.1,0],[0.2,1.51,0]];
+pointsNS = PointUtils.scalaPuntiY(pointsNS,0.5);
+var pointsCornicione1 = PointUtils.ruotaPunti(pointsNS,-PI/4,1);
+var knots = makeKnots(pointsNS);
+var pointsCornicioneLeft1 = PointUtils.ruotaPunti(pointsCornicione1,-PI/2,1);
+pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,2,zBaseTimpano-0.15);
+pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,0,0.1);
+var pointsCornicione2 = PointUtils.traslaPunti(pointsCornicione1,0,-3.8);
+var profileCornicione1 = NUBS(S0)(2)(knots)(pointsCornicione1);
+var profileCornicione2 = NUBS(S0)(2)(knots)(pointsCornicione2);
+var cornicione = BEZIER(S1)([profileCornicione1,profileCornicione2]);
+cornicione = MAP(cornicione)(domain2d);
+corniceDown.push(cornicione);
+//cornicione left
+pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,2,zBaseTimpano-0.15);
+pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,xBaseTimpano-0.1);
+var pointsCornicioneLeft2 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,3.81);
+var profileCornicioneLeft1 = NUBS(S0)(2)(knots)(pointsCornicioneLeft1);
+var profileCornicioneLeft2 = NUBS(S0)(2)(knots)(pointsCornicioneLeft2);
+var cornicioneLeft = BEZIER(S1)([profileCornicioneLeft1,profileCornicioneLeft2]);
+cornicioneLeft = MAP(cornicioneLeft)(domain2d);
+corniceDown.push(cornicioneLeft);
+corniceDown = STRUCT(corniceDown);
+corniceDown = T([0,1,2])([-0.06+ 3.6,7.465 ,3.35])(corniceDown);;
+return corniceDown;
+}
+
+var buildCornice = function(){
+var zBaseTimpano = 3.55;
+var cornice = [];
+var points = [[0.4,0,0],[0.25,0,0],[0.22,0.02,0],[0.2,0.05,0],[0.18,0.07,0],[0.1,0.1,0],[0.05,0.15,0],[0.1,0.2,0],[0.25,0.2,0],[0.4,0.2,0]];
+var pointsLeft = PointUtils.ruotaPunti(points,-PI/2 - PI/4,1);
+points = PointUtils.ruotaPunti(points,-PI/4,1);
+points = PointUtils.traslaPunti(points,2,zBaseTimpano);
+var points2 = PointUtils.traslaPunti(points,0,-3.85);
+var knots = makeKnots(points);
+var profile = NUBS(S0)(2)(knots)(points);
+var profile2 = NUBS(S0)(2)(knots)(points2);
+var corniceRight = BEZIER(S1)([profile,profile2]);
+corniceRight = MAP(corniceRight)(domain2d);
+cornice.push(corniceRight);
+
+//cornice left
+pointsLeft = PointUtils.traslaPunti(pointsLeft,2,zBaseTimpano);
+pointsLeft = PointUtils.traslaPunti(pointsLeft,0,xBaseTimpano-0.2);
+var points2 = PointUtils.traslaPunti(pointsLeft,0,4.05);
+var profileLeft1 = NUBS(S0)(2)(knots)(pointsLeft);
+var profileLeft2 = NUBS(S0)(2)(knots)(points2);
+var corniceLeft = BEZIER(S1)([profileLeft1,profileLeft2]);
+corniceLeft = MAP(corniceLeft)(domain2d);
+cornice.push(corniceLeft);
+cornice = STRUCT(cornice);
+cornice = T([0,1,2])([-0.06,8.3,3.05])(cornice);
+return cornice;
+}
+
+var buildCorniceUp = function(){
+var zBaseTimpano = 3.55;
+
+var pointsNR = [[0.4,0,0],[0.25,0,0],[0.22,0.02,0],[0.2,0.05,0],[0.18,0.07,0],[0.1,0.1,0],[0.05,0.15,0],[0.1,0.2,0]];
+var points = PointUtils.ruotaPunti(pointsNR,-PI/4,1);
+var points2 = PointUtils.ruotaPunti(points,-PI/2,1);
+
+points = PointUtils.traslaPunti(points,2,zBaseTimpano);
+points = PointUtils.traslaPunti(points,0,-3.85);
+points2 = PointUtils.traslaPunti(points2,0,xBaseTimpano-0.2+4.05);
+points2 = PointUtils.traslaPunti(points2,2,zBaseTimpano);
+var knots = makeKnots(points);
+var profile = NUBS(S0)(2)(knots)(points);
+var profile2 = NUBS(S0)(2)(knots)(points2);
+var corniceUp = BEZIER(S1)([profile,profile2]);
+corniceUp = MAP(corniceUp)(domain2d);
+corniceUp = T([0,1,2])([-0.06,10.3,3.05])(corniceUp);
+return corniceUp;
 }
 
 var buildFacade = function(){
 var xBaseTimpano = 8.52;
 var facade = [];
-var steps = buildSteps();
+exports.steps = buildSteps();
 facade.push(steps);
-var columnade = buildColumnade();
+exports.columnade = buildColumnade();
 facade.push(columnade);
-var lateralArchway = buildLateralArchway();
+exports.lateralArchway = buildLateralArchway();
 facade.push(lateralArchway);
-var timpano = buildTimpano();
+exports.timpano = buildTimpano();
 facade.push(timpano);
 facade = STRUCT(facade);
 return facade;}
 
-var buildBigWindow = function(){
-
+var buildWinOrnament = function(){
 var frame = [];
-var window1 = [];
 var xBaseTimpano = 8.52;
 var zBaseTimpano = 3.55;
 var xBaseTriangle = xBaseTimpano+0.2;
@@ -712,9 +776,6 @@ var roofPoint2 = points2[points2.length-1];
 var roofPoint3 = [roofPoint2[0],roofPoint2[1],roofPoint2[2]+zLat];
 var roof2Point1 = points3[points3.length-1];
 
-
-
-
 //lateral closure 1
 var fakePoint = [points[0],points[0], points[points.length-1]];
 var fakePointNubs = NUBS(S0)(2)([0,0,0,1,1,1])(fakePoint);
@@ -730,9 +791,6 @@ cLat2 = MAP(cLat2)(domain2d);
 frame.push(cLat2);
 frame = STRUCT(frame);
 frame = T([0,1,2])([-0.13,0.75,-0.1])(frame);
-window1.push(frame);
-
-//profile
 var ornament = [];
 var h = 2.5;
 var z = 1;
@@ -758,8 +816,22 @@ ornament = T([1,2])([-1.75,0.3])(ornament);
 
 var translationOrnament2 = depthOrnament + xBaseTimpano - 1.6;
 var ornament2 = T([0])([translationOrnament2])(ornament);
+var finalOrnament = STRUCT([ornament,ornament2,frame]);
+return finalOrnament;
+}
+
+var buildBigWindow = function(){
+
+var window1 = [];
+var ornament = buildWinOrnament();
 window1.push(ornament);
-window1.push(ornament2);
+var depthOrnament = 0.3;
+var translationOrnament2 = depthOrnament + xBaseTimpano - 1.6;
+var h = 2.5;
+var z = 1;
+var x = 0.5;
+//profile
+
 
 var hFrame = 0.4;
 var yFrame = 1;
@@ -782,8 +854,8 @@ var lowerFrame = SIMPLEX_GRID([[-depthOrnament - 0.5 + 0.1,translationOrnament2 
 lowerFrame = T([1,2])([-yFrame - hFrameLat + 0.4 - hFrame,-zFrame])(lowerFrame);
 window1.push(lowerFrame);
 
-var lowerOrnament = SIMPLEX_GRID([[-depthOrnament - 0.5,translationOrnament2 - depthOrnament],[10 * hFrame + 0.3],[-0.2,zFrame+0.1]]);
-lowerOrnament = T([1])([-yFrame - hFrameLat + 0.4 - 9*hFrame - 0.3])(lowerOrnament);
+var lowerOrnament = SIMPLEX_GRID([[-depthOrnament - 0.5,translationOrnament2 - depthOrnament],[7 * hFrame + 0.3],[-0.2,zFrame+0.1]]);
+lowerOrnament = T([1])([-yFrame - hFrameLat + 0.4 - 8*hFrame - 0.18])(lowerOrnament);
 window1.push(lowerOrnament);
 
 //decorazione superiore
@@ -843,20 +915,142 @@ window1 = STRUCT(window1);
 return window1;
 }
 
+var buildSmallWindow = function(h,w,s){
+var frames = [];	
+var smallWindow = [];
+var lateralFrames = SIMPLEX_GRID([[s,-w + 2*s,s],[h],[0.1]]);
+frames.push(lateralFrames);
+var horizFrames = SIMPLEX_GRID([[-s,w - 2*s],[s,-h+2*s,s],[0.1]]);
+frames.push(horizFrames);
+var middleFrame = SIMPLEX_GRID([[-w/2+s/2,s],[-s,h-s],[0.1]]);
+frames.push(middleFrame);
+frames = COLOR([0,0,0])(STRUCT(frames));
+smallWindow.push(frames);
+var glasses = COLOR([147/255,204/255,234/255,0.7])(SIMPLEX_GRID([[-s,w/2-3/2*s,-s,w/2-3/2*s],[-s,h-2*s],[-0.04,0.01]]));
+smallWindow.push(glasses);
+smallWindow = STRUCT(smallWindow);
+return smallWindow;
+}
+
+var buildMiddleWindow = function(h,w,s){
+var frames = [];	
+var middleWindow = [];
+var grid = [];
+var xGrid = s;
+var hGrid1 = h - 2*s;
+var wGrid = w/2 - 3/2*s;
+var lateralFrames = SIMPLEX_GRID([[s,-w + 2*s,s],[h],[0.1]]);
+frames.push(lateralFrames);
+var horizFrames = SIMPLEX_GRID([[-s,w - 2*s],[s,-h+2*s,s],[0.1]]);
+frames.push(horizFrames);
+var middleFrame = SIMPLEX_GRID([[-w/2+s/2,s],[-s,h-s],[0.1]]);
+frames.push(middleFrame);
+frames = COLOR([0,0,0])(STRUCT(frames));
+middleWindow.push(frames);
+var glasses = COLOR([147/255,204/255,234/255,0.7])(SIMPLEX_GRID([[-s,w/2-3/2*s,-s,w/2-3/2*s],[-s,h-2*s],[-0.04,0.01]]));
+middleWindow.push(glasses);
+
+//grid
+var hGrid = hGrid1 - 1/6*hGrid1;
+var pointL1 = [s,s+1/6*hGrid1,0.5*s];
+var pointL2 = [s,s+1/6*hGrid1+ 1/3*hGrid,0];
+var pointL3 = [s,s+1/6*hGrid1+ 2/3*hGrid,0];
+var pointL4 = [s,s+1/6*hGrid1+ 3/3*hGrid,0];
+var pointR1 = [s+wGrid,s+0/3*hGrid,0];
+var pointR2 = [s+wGrid,s+1/3*hGrid,0];
+var pointR3 = [s+wGrid,s+2/3*hGrid,0];
+var pointR4 = [s+wGrid,s+3/3*hGrid,0];
+var pointM1 = [s+1/3*wGrid,s+0,0];
+var pointM2 = [s+2/3*wGrid,s+hGrid1,0];
+
+var line1 = POLYLINE([pointL1,pointR3]);
+var line2 = POLYLINE([pointL2,pointR4]);
+var line4 = POLYLINE([pointL3,pointM2]);
+var line5 = POLYLINE([pointL1,pointM1]);
+var line6 = POLYLINE([pointL2,pointR1]);
+var line7 = POLYLINE([pointL3,pointR2]);
+var line8 = POLYLINE([pointL4,pointR3]);
+var line10 = POLYLINE([pointM2,pointR4]);
+var line11 = POLYLINE([pointR2,pointM1]);
+var grid = STRUCT([line1,line2,line4,line5,line6,
+			line7,line8,line10,line11]);
+var grid2 = R([0,2])([PI])(grid);
+grid2 = T([0])([s*3 + 2*wGrid])(grid2);
+middleWindow.push(grid);
+middleWindow.push(grid2);
+middleWindow = STRUCT(middleWindow);
+return middleWindow;
+}
+
+var buildDoor = function(h,w,s){
+var frames = [];	
+var door = []
+var grid = [];
+var lateralFrames = SIMPLEX_GRID([[s,-w + 2*s,s],[h],[0.1]]);
+frames.push(lateralFrames);
+var horizFrames = SIMPLEX_GRID([[-s,w - 2*s],[s,-h+2*s,s],[0.1]]);
+frames.push(horizFrames);
+var middleFrame = SIMPLEX_GRID([[-w/2+s/2,s],[-s,h-s],[0.1]]);
+frames.push(middleFrame);
+var hMiddleFrame = SIMPLEX_GRID([[-s, w/2 - 3/2*s],[-s - 1/3*(h-2*s) + s/2,s],[0.1]]);
+frames.push(hMiddleFrame);
+var hMiddleFrame2 = T([1])([1/3*(h-2*s)])(hMiddleFrame);
+frames.push(hMiddleFrame2);
+var hMiddleFrame3 = T([0])([s + (w/2 - 3/2*s)])(hMiddleFrame);
+frames.push(hMiddleFrame3);
+var hMiddleFrame4 = T([0])([s + (w/2 - 3/2*s)])(hMiddleFrame2);
+frames.push(hMiddleFrame4);
+frames = COLOR([0,0,0])(STRUCT(frames));
+door.push(frames);
+var glasses = COLOR([147/255,204/255,234/255,0.7])(SIMPLEX_GRID([[-s,w/2-3/2*s,-s,w/2-3/2*s],[-s,h-2*s],[-0.04,0.01]]));
+door.push(glasses);
+
+//grid
+var hGrid = h - 2*s;
+var wGrid = w/2 - 3/2*s;
+var line1 = POLYLINE([[s+1/3*wGrid,s,0],[s+1/3*wGrid,s+hGrid,0]]);
+grid.push(line1);
+var line2 = POLYLINE([[s+2/3*wGrid,s,0],[s+2/3*wGrid,s+hGrid,0]]);
+grid.push(line2);
+var line3 = POLYLINE([[s,s+1/6*hGrid,0],[2*s + wGrid*2, s +1/6*hGrid,0]]);
+grid.push(line3);
+var line4 = POLYLINE([[s,s+3/6*hGrid,0],[2*s + wGrid*2, s +3/6*hGrid,0]]);
+grid.push(line4);
+var line5 = POLYLINE([[s,s+5/6*hGrid,0],[2*s + wGrid*2, s +5/6*hGrid,0]]);
+grid.push(line5);
+var line6 = POLYLINE([[2*s + wGrid +1/3*wGrid,s,0],[2*s+ wGrid +1/3*wGrid,s+hGrid,0]]);
+grid.push(line6);
+var line7 = POLYLINE([[2*s + wGrid +2/3*wGrid,s,0],[2*s+ wGrid +2/3*wGrid,s+hGrid,0]]);
+grid.push(line7);
+grid = STRUCT(grid);
+door.push(grid);
+
+//ornament
+var ornament = buildWinOrnament();
+ornament = S([0,1,2])([0.25,0.25,0.25])(ornament);
+ornament = T([0,1,2])([-0.265,h+0.03,-0.1])(ornament);
+door.push(ornament);
+door = STRUCT(door);
+return door;
+}
+
 var buildWalls = function(){
 var walls = [];
+var windows = [];
 var depthWall = 1;
 var xWall = 30;
 var xWin = 0.8;
 var yGrate = 0.9*xWin;
 var yWin = 2.25;
 var hWall = 11;
-var swindow1
 var wall = [];
 var xNow=0
 var wall1 = SIMPLEX_GRID([[depthWall],[hWall],[-6.9,0.01]]);
 var wall3 = SIMPLEX_GRID([[-depthWall,0.01],[hWall],[-6.9,depthWall]]);
-var wall2 = SIMPLEX_GRID([[-depthWall-0.01,xWin],[2/17*hWall,-yGrate, 2.65/17*hWall, -yWin + 0.05,4/17*hWall + 0.62, -1.5*yGrate,1.2/17*hWall],[-6.9,depthWall]]);
+var wall2 = SIMPLEX_GRID([[-depthWall-0.01,xWin],[2/17*hWall,-yGrate, 2.65/17*hWall, -yWin + 0.05,4/17*hWall + 0.62, -1.5*yGrate,1.19/17*hWall],[-6.9,depthWall]]);
+var smallWindow1 = buildSmallWindow(1.5*yGrate,xWin,0.05);
+smallWindow1 = T([0,1,2])([depthWall+0.01,2/17*hWall+yGrate+2.65/17*hWall+yWin + 0.05+4/17*hWall + 0.52,6.9])(smallWindow1);
+windows.push(smallWindow1);
 xNow = depthWall+0.01 + xWin;
 wall.push(wall1);
 wall.push(wall2);
@@ -866,6 +1060,16 @@ xNow+= 2.6*depthWall;
 wall.push(wall4);
 xWin2 = xWin - 0.1;
 var wall5 = SIMPLEX_GRID([[-depthWall - xWin - 0.01 - 2.6*depthWall, xWin2],[2/17*hWall,yGrate, 2.7/17*hWall, -2/3*yWin,2/17*hWall + 1/3*yWin, -yGrate,2.25/17*hWall, -yGrate,1.24/17*hWall],[-6.9,depthWall]]);
+var smallWindow3 = buildSmallWindow(yGrate,xWin2,0.05);
+smallWindow3 = T([0,1,2])([depthWall + xWin + 0.01 + 2.6*depthWall, 2/17*hWall + yGrate + 2.7/17*hWall + 2/3*yWin + 2/17*hWall + 1/3*yWin + yGrate + 2.25/17*hWall,6.9])(smallWindow3);
+var smallWindow5 = buildSmallWindow(yGrate,xWin2,0.05);
+smallWindow5 = T([0,1,2])([depthWall + xWin + 0.01 + 2.6*depthWall,2/17*hWall + yGrate + 2.7/17*hWall + 2/3*yWin + 2/17*hWall + 1/3*yWin,6.9])(smallWindow5);
+var middleWindow1 = buildMiddleWindow(2/3*yWin,xWin2,0.05);
+middleWindow1 = T([0,1,2])([depthWall + xWin + 0.01 + 2.6*depthWall,2/17*hWall+yGrate+2.7/17*hWall,6.9])(middleWindow1);
+windows.push(middleWindow1);
+windows.push(smallWindow3);
+windows.push(smallWindow5);
+
 xNow+= xWin2; 
 wall.push(wall5);
 
@@ -874,6 +1078,12 @@ var wall6 = SIMPLEX_GRID([[-xNow,xWin2],[hWall],[-6.9,depthWall]]);
 xNow+=xWin2;
 wall.push(wall6);
 var wall7 = SIMPLEX_GRID([[-xNow , xWin2],[2/17*hWall,yGrate, 2.7/17*hWall, -2/3*yWin,2/17*hWall+ 1/3*yWin, -yGrate,2.5/17*hWall, +1.2*yGrate,0.76/17*hWall],[-6.9,depthWall]]);
+var smallWindow6 = T([0])([2*xWin2])(smallWindow5);
+windows.push(smallWindow6);
+var middleWindow2 = buildMiddleWindow(2/3*yWin,xWin2,0.05);
+middleWindow2 = T([0,1,2])([xNow,2/17*hWall+yGrate+2.7/17*hWall,6.9])(middleWindow2);
+windows.push(middleWindow2);
+
 xNow+=xWin2;
 wall.push(wall7);
 var wall8 = SIMPLEX_GRID([[-xNow,0.5],[hWall],[-6.9,depthWall]]);
@@ -882,11 +1092,21 @@ wall.push(wall8);
 var largPorta = 1.6;
 var wall9 = SIMPLEX_GRID([[-xNow,largPorta],[3,-yWin*1.5, (hWall-3 - yWin*1.5)],[-6.9,depthWall]]);
 wall.push(wall9);
+var door = buildDoor(1.5*yWin,largPorta,0.15);
+door = T([0,1,2])([xNow,3,6.9])(door);
+windows.push(door);
 xNow+=largPorta;
 var wall10 = SIMPLEX_GRID([[-xNow,0.5],[hWall],[-6.9,depthWall]]);
 wall.push(wall10);
 xNow+=0.5;
 var wall11 = SIMPLEX_GRID([[-xNow , xWin2],[2/17*hWall,yGrate, 2.7/17*hWall, -2/3*yWin,2/17*hWall+ 1/3*yWin, -yGrate,2.5/17*hWall, +1.2*yGrate,0.76/17*hWall],[-6.9,depthWall]]);
+var smallWindow7 = buildSmallWindow(yGrate,xWin2,0.05);
+smallWindow7 = T([0,1,2])([xNow,2/17*hWall+yGrate + 2.7/17*hWall + 2/3*yWin + 2/17*hWall+ 1/3*yWin,6.9])(smallWindow7);
+windows.push(smallWindow7);
+var middleWindow3 = buildMiddleWindow(2/3*yWin,xWin2,0.05);
+middleWindow3 = T([0,1,2])([xNow,2/17*hWall+yGrate+2.7/17*hWall,6.9])(middleWindow3);
+windows.push(middleWindow3);
+
 wall.push(wall11);
 xNow+=xWin2;
 var wall12 = SIMPLEX_GRID([[-xNow,xWin2],[hWall],[-6.9,depthWall]]);
@@ -894,11 +1114,20 @@ wall.push(wall12);
 xNow+=xWin2;
 var wall13 = SIMPLEX_GRID([[-xNow, xWin2],[2/17*hWall,yGrate, 2.7/17*hWall, -2/3*yWin,2/17*hWall + 1/3*yWin, -yGrate,2.25/17*hWall, -yGrate,1.24/17*hWall],[-6.9,depthWall]]);
 wall.push(wall13);
+var smallWindow4 = T([0])([xNow - (depthWall + xWin + 0.01 + 2.6*depthWall)])(smallWindow3);
+var smallWindow8 = T([0])([2*xWin2])(smallWindow7);
+windows.push(smallWindow8);
+windows.push(smallWindow4);
+var middleWindow4 = buildMiddleWindow(2/3*yWin,xWin2,0.05);
+middleWindow4 = T([0,1,2])([xNow,2/17*hWall+yGrate+2.7/17*hWall,6.9])(middleWindow4);
+windows.push(middleWindow4);
 xNow+=xWin2;
 var wall14 = SIMPLEX_GRID([[-xNow, 2.6*depthWall],[hWall],[-6.9,depthWall]]);
 xNow+=2.6*depthWall;
 wall.push(wall14);
-var wall14 = SIMPLEX_GRID([[-xNow,xWin],[2/17*hWall,-yGrate, 2.65/17*hWall, -yWin + 0.05,4.6/17*hWall + 0.53, -1.2*yGrate,1.1/17*hWall],[-6.9,depthWall]]);
+var wall14 = SIMPLEX_GRID([[-xNow,xWin],[2/17*hWall,-yGrate, 2.65/17*hWall, -yWin + 0.05,4/17*hWall + 0.62, -1.5*yGrate,1.2/17*hWall],[-6.9,depthWall]]);
+var smallWindow2 = T([0])([xNow - depthWall - 0.01])(smallWindow1);
+windows.push(smallWindow2);
 xtranslationWin = xNow;
 xNow+= xWin;
 var wall15 = SIMPLEX_GRID([[-xNow,0.01],[hWall],[-6.9,depthWall]]);
@@ -908,11 +1137,24 @@ wall.push(wall14);
 wall.push(wall15);
 wall.push(wall16);
 
-var decwall1 = SIMPLEX_GRID([[depthWall + xWin + 2*depthWall],[-3,0.4],[-6.89,0.01]]);
-wall.push(decwall1);
-var decwall2 = SIMPLEX_GRID([[depthWall + xWin + 2*depthWall],[-2.7,0.3],[-6.86,0.04]]);
-wall.push(decwall2);
+var decwall1 = T([0])([-0.01])(SIMPLEX_GRID([[xWin + 3*depthWall],[-3,0.4],[-6.89,0.01]]));
 
+wall.push(decwall1);
+var decwall2 = T([0])([-0.01])(SIMPLEX_GRID([[xWin + 3*depthWall],[-2.7,0.3],[-6.86,0.04]]));
+wall.push(decwall2);
+var decwall3 = T([0])([11.84])(decwall1);
+wall.push(decwall3);
+var decwall4 = T([0])([11.87])(decwall2);
+wall.push(decwall4);
+
+var depth1 = SIMPLEX_GRID([[xWin + 3*depthWall],[0.6],[-6.8,0.1]]);
+wall.push(depth1);
+var depth2 = SIMPLEX_GRID([[xWin + 3*depthWall],[-0.6,0.4],[-6.85,0.05]]);
+wall.push(depth2);
+var depth3 = T([0])([11.82])(SIMPLEX_GRID([[xWin + 3*depthWall + 0.1],[0.6],[-6.8,0.1]]));
+wall.push(depth3);
+var depth4 = T([0])([11.82])(SIMPLEX_GRID([[xWin + 3*depthWall + 0.05],[-0.6, 0.4],[-6.85,0.05]]));
+wall.push(depth4);
 
 var window1 = buildBigWindow();
 var swindow1X = xWin/6.2;
@@ -920,21 +1162,34 @@ var swindow1Y = 0.22;
 var swindow1Z = 0.3;
 window1 = S([0,1,2])([swindow1X,swindow1Y,swindow1Z])(window1);
 window1 = T([0,1,2])([0.85,2/17*hWall+yGrate + 2/17*hWall + yWin + 0.2 + 0.4,6.8])(window1);
-wall.push(window1);
+windows.push(window1);
 
 var window2 = T([0])([xtranslationWin - xWin - 0.2])(window1);
-wall.push(window2);
+windows.push(window2);
+var corniceDown = buildCorniceDown();
+wall.push(corniceDown);
+var cornice = T([0])([depthWall + 2/20*xWall - 0.4])(buildCornice());
+wall.push(cornice);
+var corniceUp = T([0])([depthWall + 2/20*xWall - 0.4])(buildCorniceUp());
+wall.push(corniceUp);
 wall = STRUCT(wall);
-wall = T([0])([-depthWall - 2/20*xWall + 0.4])(wall);
-walls.push(wall);
-var wallLeft = R([0,2])([-PI/2])(wall);
-wallLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.45])(wallLeft);
+wall = COLOR(bColor)(wall);
+windows = STRUCT(windows);
+var wallFinal = STRUCT([wall,windows]);
+wallFinal = T([0])([-depthWall - 2/20*xWall + 0.4])(wallFinal);
+
+walls.push(wallFinal);
+var wallLeft = R([0,2])([-PI/2])(wallFinal);
+wallLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.44])(wallLeft);
 walls.push(wallLeft);
-var wallRight = R([0,2])([PI/2])(wall);
+var wallRight = R([0,2])([PI/2])(wallFinal);
 wallRight = T([0,2])([-xBaseTimpano-1.98,3.8+xBaseTimpano/2 + 10.86 ])(wallRight);
 walls.push(wallRight);
-//var wallDietro = R([0,2])([PI])(wall);
-//wallDietro = T([2])([(3.8+xBaseTimpano/2 + 2.45)*2])(wallDietro);
+var wallBehind = R([0,2])([PI])(wallFinal);
+wallBehind = T([0,2])([xBaseTimpano - 0.1,(3.8+xBaseTimpano/2 + 2.45)*2 + 8.4])(wallBehind);
+walls.push(wallBehind);
+
+
 walls = STRUCT(walls);
 return walls;
 }
@@ -943,22 +1198,27 @@ var buildFacades = function(){
 var facades = [];
 var facade = buildFacade();
 facades.push(facade);
-//var facadeLeft =R([0,2])([-PI/2])(facade);
-//facadeLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.45])(facadeLeft);
-//facades.push(facadeLeft);
-//var facadeRight = R([0,2])([PI/2])(facade);
-//facadeRight = T([0,2])([-xBaseTimpano-1.99,3.8+xBaseTimpano/2 + 10.85 ])(facadeRight);
-//facades.push(facadeRight);
+var facadeLeft =R([0,2])([-PI/2])(facade);
+facadeLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.44])(facadeLeft);
+facades.push(facadeLeft);
+var facadeRight = R([0,2])([PI/2])(facade);
+facadeRight = T([0,2])([-xBaseTimpano-1.98,3.8+xBaseTimpano/2 + 10.86 ])(facadeRight);
+facades.push(facadeRight);
+var facadeBehind = R([0,2])([PI])(facade);
+facadeBehind = T([0,2])([xBaseTimpano - 0.1,(3.8+xBaseTimpano/2 + 2.45)*2 + 8.4])(facadeBehind);
+facades.push(facadeBehind);
 facades = STRUCT(facades);
 return facades;
 }
 
 var ville = [];
-//var facades = buildFacades();
-//ville.push(facades);
+var facades = buildFacades();
+ville.push(facades);
 var walls = buildWalls();
 ville.push(walls);
-
+//ville.push(buildDoor(1.5*2.25,1.6,0.16));
 ville = STRUCT(ville);
-exports.ville = ville;}(this);
+exports.ville = ville;
+}(this);
+
 DRAW(ville);
