@@ -66,6 +66,13 @@ PointUtils.scalaPunti = function(pointList, scalamento) {
   return [ pt[0] * scalamento, pt[1], pt[2]];
     });
 };
+
+PointUtils.scaleAllPoints = function(pointList,scale){
+	 return pointList.map(function(pt) { 
+  return [ pt[0] * scale, pt[1]*scale, pt[2]*scale];
+    });
+};
+
 PointUtils.scalaPuntiY = function(pointList, scalamento) {
     return pointList.map( function(pt) { 
   return [ pt[0], pt[1]*scalamento, pt[2]];
@@ -82,8 +89,141 @@ var makeKnots = function(points){
 	knots.push(i);
 return knots;}
 
-var buildColumnBase = function(){
+var buildStatue = function(){
+var points =[[4.9,25.7],[6,25.1],[7,24.8],[7.9,24.5],
+            [7.4,22],[7.4,22.2],[7.5,21.4],[7.4,20.8],[7.1,19.6],
+            [6.8,18.5],[7,18.4],[7.1,18.3],[7.2,18.1],
+            [7.1,18],[7.2,17.8],[7.1,17.5],[7.2,17.4],
+            [7.2,17.2],[7.1,17.1],[7.2,16.9],[7.1,16.7],
+            [7.2,16.5],[7.2,16.2],[6.9,16],[7.2,14.5],
+            [7.2,14],[7.5,13],[7.4,12.6 ],[7.6,11.3 ],
+            [7.5,11.2 ],[7.5,10.2 ],[1.5,10.8],
+            [1.1,11.1],[1,13.5],[0.9,14.4],[1,16],[1,16.7],
+            [0.9,16.7],[0.9,17.2],[1.1,17.5],[0.9,17.6],[1.2,17.8],[1.6,18.5],
+            [1.4,18.5],[1.3,18.8],[1.5,19],[1.4,19.1],[1.5,19.3],
+            [1.4,19.5],[1.5,19.6],[1.2,19.6],[1.5,20],[0.9,23.4],
+            [0.7,23.8],[1.3,24.9],[1.5,25.5],[2,25.4],[2.5,25],
+            [3.5,25.2],[4.9,25.7]];
 
+
+ var points2 = [[7.5,11.2 ],[7.5,10.2 ],[7.3,10 ],[7.3,9 ],
+            [7.1,8.6 ],[7.9,7 ],[8,6 ],[8.4,3],[7.1,3.7],[7.1,4.1],[6,6.5],[5.9,7.6],
+            [5.8,7.8],[5.3,9],[5.1,10.1],[5,11.2],[7.5,11.2 ]];
+
+ var points3 = [[4.4,11.4],
+            [4.3,8.2],[4.5,8.4],[4.6,5.3],[4.5,4.9],[4.8,1.8],[3.3,2.3],[2.8,4.6],
+            [2.8,4.9],[2.5,6.1],[2.6,7.6],[1,12],[4.4,11.4]];
+
+
+ var points4 = [[6.5,25],[7.9,24.5],
+            [8.4,24],[8.8,23],[9.3,21],[9.7,19.4],[8.3,19.5],
+ 			[7.4,22.2],[8.2,20],[6.5,25]];
+
+
+var points7 = [
+            [9.59,20],[9,18.1],[8.7,18],[8.4,18.1],
+            [8.1,18.8],[8.1,20],[9.59,20]];
+
+
+var points5 = [[8.2,3.9 ],
+            [8.9,2.6 ],[9.4,1.8 ],[9.4,1 ],[9.1,0.8 ],[9,1 ],
+            [8.9,0.9 ],[8.4,0.8 ],[8.1,1],[7.7,2.4],[7.1,3.4],
+            [7.2,4],[8.2,3.9 ]];
+
+var points6 = [[4.6,2.3],
+            [4.6,1.2],[4.2,1],[4,0.6],[2.7,0.5],[2.5,0.6],
+            [2.2,0.6],[1.9,1.2],[2.9,1.4],[3.4,2],[3.5,2.8],[4.6,2.3]];
+
+var statue = [];
+
+var knots = makeKnots(points);
+var profile = NUBS(S0)(2)(knots)(points);
+var body = CONICAL_SURFACE([6,17.5])(profile)
+body = MAP(body)(domain2d);
+statue.push(body);
+
+var knots = makeKnots(points2);
+var profile = NUBS(S0)(2)(knots)(points2);
+var leftLeg = CONICAL_SURFACE([6.8,7.5])(profile)
+leftLeg = MAP(leftLeg)(domain2d);
+statue.push(leftLeg);
+
+var knots = makeKnots(points3);
+var profile = NUBS(S0)(2)(knots)(points3);
+var rightLeg = CONICAL_SURFACE([4,5])(profile)
+rightLeg = MAP(rightLeg)(domain2d);
+statue.push(rightLeg);
+
+var knots = makeKnots(points4);
+var profile = NUBS(S0)(2)(knots)(points4);
+var arm = CONICAL_SURFACE([8,23])(profile)
+arm = MAP(arm)(domain2d);
+statue.push(arm);
+
+var knots = makeKnots(points7);
+var profile = NUBS(S0)(2)(knots)(points7);
+var arm2 = CONICAL_SURFACE([9,19.5])(profile)
+arm2 = MAP(arm2)(domain2d);
+statue.push(arm2);
+
+var knots = makeKnots(points5);
+var profile = NUBS(S0)(2)(knots)(points5);
+var leftFoot = CONICAL_SURFACE([8.5,2.2])(profile)
+leftFoot = MAP(leftFoot)(domain2d);
+statue.push(leftFoot);
+
+var knots = makeKnots(points6);
+var profile = NUBS(S0)(2)(knots)(points6);
+var rightFoot = CONICAL_SURFACE([4,1.5])(profile)
+rightFoot = MAP(rightFoot)(domain2d);
+statue.push(rightFoot);
+statue = COLOR(bColor)(STRUCT(statue));
+statue = EXTRUDE([0.7])(statue);
+statue = S([0,1,2])([0.05,0.05,0.05])(statue);
+var pedestal = COLOR(bColor)(SIMPLEX_GRID([[0.4],[0.1],[0.4]]));
+pedestal = T([0,1,2])([0.1,-0.07,-0.175])(pedestal);
+var completeStatue = STRUCT([pedestal,statue]);
+return completeStatue;
+}
+
+var buildStatue2 = function(){
+
+var points = [[5,24],[6.1,23.8],[6.6,23],[6.8,21],[8.1,19.8],
+			[8.6,17.2],[9.1,15],[9.4,12.2],[8.9,11.9],[8.7,12.1],
+			[8.6,12],[8.8,10.2],[8.6,9.8],[8.6,9.2],[8.1,8.8],
+			[8.1,8.5],[8,8.2],[7.9,1.3],[8.2,0.8],[8.2,0.5],[1.4,0.5],
+			[1.5,1],[2.2,1.7],[2.2,4.4],[2.1,9.9],[1.6,10.7],
+			[1.6,11.3],[0.9,11.1],[0.8,11.4],[1.3,15],[1.8,19],
+			[2.3,20],[3.3,20.8],[3.6,23],[4,23.7],[5,24]];
+
+var knots = makeKnots(points);
+var profile = NUBS(S0)(2)(knots)(points);
+var statueSur = CONICAL_SURFACE([6,14])(profile);
+statueSur = MAP(statueSur)(domain2d);
+var statue = EXTRUDE([0.7])(statueSur);
+statue = COLOR(bColor)(statue);
+statue = S([0,1,2])([0.05,0.05,0.05])(statue);
+return statue;
+}
+
+var buildProfBasRelief = function(){
+var points = [[5,24],[6.1,23.8],[6.6,23],[6.8,21],[8.1,19.8],
+			[8.6,17.2],[9.1,15],[9.4,12.2],[8.9,11.9],[8.7,12.1],
+			[8.6,12],[8.8,10.2],[8.6,9.8],[8.6,9.2],[8.1,8.8],
+			[8.1,8.5],[8,8.2],[7.9,1.3],[8.2,0.8],[8.2,0.5],[1.4,0.5],
+			[1.5,1],[2.2,1.7],[2.2,4.4],[2.1,9.9],[1.6,10.7],
+			[1.6,11.3],[0.9,11.1],[0.8,11.4],[1.3,15],[1.8,19],
+			[2.3,20],[3.3,20.8],[3.6,23],[4,23.7],[5,24]];
+
+points = points.map(function(p){return [p[0],p[1],0];});
+points = PointUtils.scaleAllPoints(points,0.05);
+var knots = makeKnots(points);
+var profile = NUBS(S0)(2)(knots)(points);
+profile = MAP(profile)(INTERVALS(1)(200));
+return profile;
+}
+
+var buildColumnBase = function(){
 var points = [[0,0,0],[4,0,0],[4,0,1],[3,0,1],[3,0,2],[2,0,2],[2,0,3],[0,0,3]];
 var knots = makeKnots(points);
 var curve = NUBS(S0)(2)(knots)(points);
@@ -408,7 +548,12 @@ var nSteps = 22;
 var steps = COLOR(bColor)(STRUCT(REPLICA(nSteps)([steps1,trans])));
 
 var steps = STRUCT([finalStepsBorder,steps]);
-var finalSteps = STRUCT([steps,vGrid,vGridRight,hole1,hole2]);
+
+var statue1 = buildStatue();
+var statue2 = R([0,2])([PI])(buildStatue());
+statue2 = T([0,1,2])([0.6,3.07,0.5])(statue2);
+statue1 = T([0,1,2])([5.4,3.07,0.5])(statue1);
+var finalSteps = STRUCT([steps,vGrid,vGridRight,hole1,hole2,statue1,statue2]);
 var finalSteps = S([0])([1.4])(finalSteps);
 return finalSteps;}
 
@@ -612,7 +757,7 @@ var space = (ipotenusa + 1 - xCubo*nCubi)/(nCubi-1);
 var tx = space*SIN(alpha-PI/24);
 var ty = space*COS(alpha-PI/24);
 var t = T([0,1])([-tx,-ty]);
-var cubetti = T([0,1,2])([0.06,-7.465,-3.35])(STRUCT(REPLICA(nCubi)([cubo,t])));
+var cubetti = T([0,1,2])([0.02,-7.465,-3.35])(STRUCT(REPLICA(nCubi)([cubo,t])));
 var t2 = T([0,1])([tx,-ty]);
 var cubetti2 = T([0,1,2])([0.06,-7.465,-3.35])(STRUCT(REPLICA(nCubi)([cubo,t2])));
 timpano.push(cubetti);
@@ -638,13 +783,70 @@ var tetto = SIMPLICIAL_COMPLEX([tettoPunto1,tettoPunto2,tettoPunto3,tettoPunto4,
 var tetto2 = SIMPLICIAL_COMPLEX([tetto2Punto1,tettoPunto2,tettoPunto3,tetto2Punto4,tetto2Punto1])([[0,1,3],[2,3,1]]);
 tetto = STRUCT([tetto,tetto2]);
 tetto = T([0,1,2])([-0.13,0.75,-0.1])(tetto);
-tetto = COLOR([100/255,34/255,34/255])(tetto);
-var plate = SIMPLEX_GRID([[1],[0.5],[0.09]]);
-plate = T([0,2])([xBaseTimpano/2-1,0.1])(plate);
+tetto = COLOR([205/255,92/255,92/255])(tetto);
+var plate = SIMPLEX_GRID([[1],[0.5],[0.1]]);
+plate = T([0,2])([xBaseTimpano/2 - 0.5,0.05])(plate);
 timpano.push(plate);
+
+var basRelief = buildStatue2();
+basRelief = T([0,1,2])([4,1.3,0.01])(basRelief);
+timpano.push(basRelief);
+
+var profBasRelief = buildProfBasRelief();
+profBasRelief = T([0,1,2])([4,1.3,0.01])(profBasRelief);
+
+
+var ornament1 = TORUS_SURFACE([0.05, 0.2])([50,10]);
+ornament1 = T([0,1,2])([1.5,1.5,0.2])(ornament1);
+ornament1 = S([0])([1.6])(ornament1);
+timpano.push(ornament1);
+var ornament2 = T([0])([3.8])(ornament1);
+timpano.push(ornament2);
+
+//ornament3
+var ornPoints = [[0,1,0],[0.5,1,0],[0.5,0.2,0],[0.5,0.0,0],
+				[0.5,-0.2,0],[0.5,-0.6,0],[0,-0.8,0],[-0.5,-0.6,0],
+				[-0.5,-0.2,0],[-0.5,0,0],[-0.5,0.2,0],[-0.5,1,0],[0,1,0]];
+var ornProfile = NUBS(S0)(2)(makeKnots(ornPoints))(ornPoints);
+var fake = [0,0,0];
+var fakeProfile = NUBS(S0)(3)([0,0,0,1,1,1])([fake,fake]);
+var ornSurface = BEZIER(S1)([fakeProfile,ornProfile]);
+var ornPoints2 = PointUtils.traslaPunti(ornPoints,2,0.2);
+var ornProfile2 = NUBS(S0)(2)(makeKnots(ornPoints2))(ornPoints2);
+var latOrnSurface = BEZIER(S1)([ornProfile,ornProfile2]);
+var ornament3 = [];
+ornSurface = MAP(ornSurface)(domain2d);
+ornament3.push(ornSurface);
+
+latOrnSurface = MAP(latOrnSurface)(domain2d);
+ornament3.push(latOrnSurface);
+ornament3 = STRUCT(ornament3);
+ornament3 = T([0,1,2])([4.25,1.8,0.08])(ornament3);
+timpano.push(ornament3);
 timpano = STRUCT(timpano);
 timpano = COLOR(bColor)(timpano);
-timpano = STRUCT([timpano,tetto]);
+var statue1 = buildStatue();
+var pedestal2 = T([0,1,2])([0.15,-0.35,-0.125])(SIMPLEX_GRID([[0.3],[0.3],[0.3]]));
+pedestal2 = COLOR(bColor)(pedestal2);
+var finalStatue1 = STRUCT([statue1,pedestal2]);
+finalStatue1 = T([0,1,2])([0.2,1.6,0.8])(finalStatue1);
+
+var statue2 = buildStatue();
+var pedestal2 = T([0,1,2])([0.15,-0.35,-0.125])(SIMPLEX_GRID([[0.3],[0.3],[0.3]]));
+pedestal2 = COLOR(bColor)(pedestal2);
+var finalStatue2 = STRUCT([statue2,pedestal2]);
+finalStatue2 = R([0,2])([PI])(finalStatue2);
+finalStatue2 = T([0,1,2])([8.3,1.6,0.8])(finalStatue2);
+
+var statue3 = T([0,1,2])([-0.05,0.05,0.2])(buildStatue2());
+var pedestal1 = COLOR(bColor)(SIMPLEX_GRID([[0.4],[0.1],[0.4]]));
+var pedestal2 = T([0,1,2])([0.05,-0.3,0.05])(SIMPLEX_GRID([[0.3],[0.3],[0.3]]));
+pedestal2 = COLOR(bColor)(pedestal2);
+var finalStatue3 = STRUCT([statue3,pedestal2,pedestal1]);
+finalStatue3 = R([0,2])([PI])(finalStatue3);
+finalStatue3 = T([0,1,2])([4.475,3.6,0.8])(finalStatue3);
+
+timpano = STRUCT([timpano,tetto,finalStatue1,finalStatue2,finalStatue3,profBasRelief]);
 timpano = T([0,1,2])([-0.06,7.465,3.35])(timpano);
 return timpano;
 }
@@ -714,7 +916,9 @@ return cornice;
 var buildCorniceUp = function(){
 var zBaseTimpano = 3.55;
 
-var pointsNR = [[0.4,0,0],[0.25,0,0],[0.22,0.02,0],[0.2,0.05,0],[0.18,0.07,0],[0.1,0.1,0],[0.05,0.15,0],[0.1,0.2,0]];
+var pointsNR = [[0.4,0,0],[0.25,0,0],[0.22,0.02,0],
+				[0.2,0.05,0],[0.18,0.07,0],[0.1,0.1,0],[
+				0.05,0.15,0],[0.1,0.2,0]];
 var points = PointUtils.ruotaPunti(pointsNR,-PI/4,1);
 var points2 = PointUtils.ruotaPunti(points,-PI/2,1);
 
@@ -755,7 +959,10 @@ var xBaseTriangle = xBaseTimpano+0.2;
 var hTriangle = 2.5;
 var hypotenuse = SQRT((hTriangle*hTriangle) + (xBaseTriangle/2*xBaseTriangle/2));
 var alpha = Math.asin(hTriangle/hypotenuse)+PI/4.8;
-var pointsNR = [[0,0,0.3],[0,0,0.1],[0,0.05,0.05],[0,0.1,0.1],[0,0.15,0.05],[0,0.2,0.1],[0,0.2,0.3]];
+var pointsNR = [[0,0,0.3],[0,0,0.1],[0,0.05,0.05],
+				[0,0.1,0.1],[0,0.15,0.05],[0,0.2,0.1],
+				[0,0.2,0.3]];
+
 pointsNR = PointUtils.traslaPunti(pointsNR,1,0.01);
 var points=PointUtils.ruotaPunti(pointsNR,-alpha,2);
 points = PointUtils.scalaPuntiY(points,1.5);
@@ -1264,15 +1471,15 @@ var buildFacades = function(){
 var facades = [];
 var facade = buildFacade();
 facades.push(facade);
-//var facadeLeft =R([0,2])([-PI/2])(facade);
-//facadeLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.44])(facadeLeft);
-//facades.push(facadeLeft);
-//var facadeRight = R([0,2])([PI/2])(facade);
-//facadeRight = T([0,2])([-xBaseTimpano-1.98,3.8+xBaseTimpano/2 + 10.86 ])(facadeRight);
-//facades.push(facadeRight);
-//var facadeBehind = R([0,2])([PI])(facade);
-//facadeBehind = T([0,2])([xBaseTimpano - 0.1,(3.8+xBaseTimpano/2 + 2.45)*2 + 8.4])(facadeBehind);
-//facades.push(facadeBehind);
+var facadeLeft =R([0,2])([-PI/2])(facade);
+facadeLeft = T([0,2])([3.8*2 +xBaseTimpano + 2.8,3.8+xBaseTimpano/2 + 2.44])(facadeLeft);
+facades.push(facadeLeft);
+var facadeRight = R([0,2])([PI/2])(facade);
+facadeRight = T([0,2])([-xBaseTimpano-1.98,3.8+xBaseTimpano/2 + 10.86 ])(facadeRight);
+facades.push(facadeRight);
+var facadeBehind = R([0,2])([PI])(facade);
+facadeBehind = T([0,2])([xBaseTimpano - 0.1,(3.8+xBaseTimpano/2 + 2.45)*2 + 8.4])(facadeBehind);
+facades.push(facadeBehind);
 facades = STRUCT(facades);
 return facades;
 }
@@ -1388,17 +1595,17 @@ var street1 = SIMPLEX_GRID([[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2],[0
 street = COLOR(streetColor)(street);
 street1 = COLOR(streetColor)(street1);
 var grass = STRUCT([grass,street,street1]);
-grass = T([0,1,2])([-lGrass/4 - 8.5,-0.02,-lStreet - 3.3])(grass);
+grass = T([0,1,2])([-lGrass/4 - 8.3,-0.02,-lStreet - 3.3])(grass);
 return grass;
 }
 
 var ville = [];
 var facades = buildFacades();
 ville.push(facades);
-//var walls = buildWalls();
-//ville.push(walls);
-//var roof = buildRoof();
-//ville.push(roof);
+var walls = buildWalls();
+ville.push(walls);
+var roof = buildRoof();
+ville.push(roof);
 var grass = buildGrass();
 ville.push(grass);
 ville = STRUCT(ville);
