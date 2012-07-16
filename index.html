@@ -107,16 +107,28 @@ Every part described is put into a STRUCT after a series of rototranslation and 
 
 <h2>2 Wall</h2>
 <p>This part of the model includes walls, ornaments, windows and the principal door. The <i>Wall</i>model is then replicated, after appropriate rototranslation, on the four sides similarly to the <i>Facades</i>.
+  <img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/wall.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/wall-model.jpg" width="280" height="240"/></p>
 <h3>2.1 Wall</h3>
 The simple walls were made using only SIMPLEX_GRID. Given height,width and thickness the wall is automatically generated, with holes in correspondence of windows and the door. For the ornaments were used the usual tecnique of two bidimensional NUBS for the profile and a BEZIER between them for the surface.
 <h3>2.2 Small and Medium Windows</h3>
 These windows were made by a series of SIMPLEX_GRID, to draw the frames and the glasses. These windows are generated automatically given the width and the height. The difference between medium and small windows is only that the second one has a grid, drawn by a series of POLYLINE functions; therefore, every model's window is generated using appropriate height and width and a series of rototranslation in order to put it in the right position.
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/small-window.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/small-window-model.jpg" width="280" height="240"/>
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/medium-window.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/medium-window-model.jpg" width="280" height="240"/>
 <h3>2.3 Big Window</h3>
 The frames and the glasses of the Big Window were made the same way as previous. It includes also some ornaments: the small gable at the top is a scaled clone of the facade's gable; the other ornaments were made using bidimensional NUBS for the profiles and the function CYLINDRICAL_SURFACE to generate the relative surfaces.
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/big-window.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/big-window-model.jpg" width="280" height="240"/>
 <h3>2.4 Door</h3>
 The tecnique is the same used for the windows: the ornaments (the small gable also) are the same of the Big Window. The grid were made by POLYLINE functions.
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/door.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/door-model.jpg" width="280" height="240"/>
 <h3>2.5 Grate</h3>
 The grate is simply composed by three horizontal and three vertical CYL_SURFACEs, as the grate of the facade's steps.
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/grate.jpg" width="280" height="240"/> 
+<img src="https://github.com/dario1089/mairepo1/raw/gh-pages/images/grate-model.jpg" width="280" height="240"/>
 
 <h2>3 Roof</h2>
 The roof is composed by two parts, roof and dome. It is generated and put in the right position with a series of rototranslation.
