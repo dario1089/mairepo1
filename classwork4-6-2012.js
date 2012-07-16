@@ -1600,14 +1600,14 @@ return grass;
 }
 
 var ville = [];
-var facades = buildFacades();
-ville.push(facades);
-var walls = buildWalls();
-ville.push(walls);
+//var facades = buildFacades();
+//ville.push(facades);
+//var walls = buildWalls();
+//ville.push(walls);
 var roof = buildRoof();
 ville.push(roof);
-var grass = buildGrass();
-ville.push(grass);
+//var grass = buildGrass();
+//ville.push(grass);
 ville = STRUCT(ville);
 exports.ville = ville;
 }(this);
