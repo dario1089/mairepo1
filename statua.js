@@ -23,4 +23,4 @@ var profile = NUBS(S0)(2)(knots)(points);
 var statueSur = CONICAL_SURFACE([6,14])(profile);
 statueSur = MAP(statueSur)(domain2d);
 var statue = EXTRUDE([0.7])(statueSur);
-DRAW(statue);
+return statue;
