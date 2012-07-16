@@ -1585,32 +1585,70 @@ dome = T([0,1,2])([-3.8,11.17,6.7])(dome);
 return dome;
 }
 
-var buildGrass = function(){
-var grassColor = [0/255, 153/255, 0/255];
-var streetColor = [1,1,1];
-var lGrass = 50;
+//var buildGrass = function(){
+//var grassColor = [0/255, 153/255, 0/255];
+//var streetColor = [1,1,1];
+//var lGrass = 50;
 
-var lStreet = 7;
-var grass = SIMPLEX_GRID([[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2],[0.01],[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2]]);
-grass = COLOR(grassColor)(grass);
-var street = SIMPLEX_GRID([[-(lGrass-lStreet)/2, lStreet],[0.01],[lGrass]]);
-var street1 = SIMPLEX_GRID([[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2],[0.01],[-(lGrass-lStreet)/2,lStreet]]);
-street = COLOR(streetColor)(street);
-street1 = COLOR(streetColor)(street1);
-var grass = STRUCT([grass,street,street1]);
-grass = T([0,1,2])([-lGrass/4 - 8.3,-0.02,-lStreet - 3.3])(grass);
-return grass;
+//var lStreet = 7;
+//var grass = SIMPLEX_GRID([[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2],[0.01],[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2]]);
+//grass = COLOR(grassColor)(grass);
+//var street = SIMPLEX_GRID([[-(lGrass-lStreet)/2, lStreet],[0.01],[lGrass]]);
+//var street1 = SIMPLEX_GRID([[(lGrass-lStreet)/2, -lStreet,(lGrass-lStreet)/2],[0.01],[-(lGrass-lStreet)/2,lStreet]]);
+//street = COLOR(streetColor)(street);
+//street1 = COLOR(streetColor)(street1);
+//var grass = STRUCT([grass,street,street1]);
+//grass = T([0,1,2])([-lGrass/4 - 8.3,-0.02,-lStreet - 3.3])(grass);
+//return grass;
+//}
+
+var buildGarden = function(){
+var garden = [];	
+var xGarden1 = wallX + 12/11*wallX;
+var floor1 = SIMPLEX_GRID([[xGarden1],[0.01],[xGarden1]]);
+garden.push(floor1);
+var grass1 = SIMPLEX_GRID([[-3/23*xGarden1,2/23*xGarden1,-13/23*xGarden1,2/23*xGarden1],[-0.01,0.01],[-2/23*xGarden1,6/23*xGarden1]]);
+grass1 = COLOR([0/255, 153/255, 0/255])(grass1);
+garden.push(grass1);
+var streets1 = SIMPLEX_GRID([[-xGarden1,4/23*xGarden1],[0.01],[-7/23*xGarden1,2/23*xGarden1,-5/23*xGarden1,2/23*xGarden1,-3/23*xGarden1,1/23*xGarden1]]);
+garden.push(streets1);
+var streets2 = SIMPLEX_GRID([[-27/23*xGarden1,2/23*xGarden1],[0.01],[36/23*xGarden1]]);
+streets2 = T([2])([-16/23*xGarden1])(streets2);
+garden.push(streets2);
+var grass2 = SIMPLEX_GRID([[-xGarden1,4/23*xGarden1],[-0.01,0.01],[7/23*xGarden1,-2/23*xGarden1,5/23*xGarden1,-2/23*xGarden1,3/23*xGarden1]]);
+grass2 = COLOR([0/255, 153/255, 0/255])(grass2);
+garden.push(grass2);
+var square1 = SIMPLEX_GRID([[2/23*xGarden1],[0.01],[16/23*xGarden1]]);
+square1 = T([2])([-16/23*xGarden1])(square1);
+garden.push(square1);
+var square2 = SIMPLEX_GRID([[5/23*xGarden1],[0.01],[18/23*xGarden1]]);
+square2 = T([0,2])([-5/23*xGarden1,-16/23*xGarden1])(square2);
+garden.push(square2);
+var streets3 = SIMPLEX_GRID([[-7/23*xGarden1,2/23*xGarden1,-5/23*xGarden1,2/23*xGarden1],[0.01],[11/23*xGarden1]]);
+streets3 = T([2])([-11/23*xGarden1])(streets3);
+garden.push(streets3);
+var grass3 = SIMPLEX_GRID([[-2/23*xGarden1,5/23*xGarden1,-9/23*xGarden1,11/23*xGarden1],[-0.01,0.01],[16/23*xGarden1]]);
+grass3 = COLOR([0/255, 153/255, 0/255])(grass3);
+grass3 = T([2])([-16/23*xGarden1])(grass3);
+garden.push(grass3);
+var grass4 = SIMPLEX_GRID([[-9/23*xGarden1,5/23*xGarden1],[-0.01,0.01],[11/23*xGarden1]]);
+grass4 = COLOR([0/255, 153/255, 0/255])(grass4);
+grass4 = T([2])([-11/23*xGarden1])(grass4);
+garden.push(grass4);
+garden = STRUCT(garden);
+garden = T([0,1,2])([-12,-0.02,-2])(garden);
+return garden;
 }
 
 var ville = [];
-var facades = buildFacades();
-ville.push(facades);
+//var facades = buildFacades();
+//ville.push(facades);
 var walls = buildWalls();
 ville.push(walls);
-var roof = buildRoof();
-ville.push(roof);
-var grass = buildGrass();
-ville.push(grass);
+//var roof = buildRoof();
+//ville.push(roof);
+var garden = buildGarden();
+ville.push(garden);
 ville = STRUCT(ville);
 exports.ville = ville;
 }(this);
