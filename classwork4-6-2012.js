@@ -6,9 +6,9 @@ var xBaseTimpano = 8.52;
 var bColor = [1,1,0.9];
 var wallX;
 
-var PointUtils = function() {};
+var Point = function() {};
 
-PointUtils.ruotaPunti = function(pointList, angolo, asse) {
+Point.rotate = function(pointList, angolo, asse) {
     if (asse === 0) {
       var alfa = angolo;
       return pointList.map( function(pt) { 
@@ -28,24 +28,9 @@ PointUtils.ruotaPunti = function(pointList, angolo, asse) {
      
     return pointList;
 };
- 
-PointUtils.ribaltaPunti = function(pointList, asse) {
-    if (asse === 0) {
-      return pointList.map( function(pt) { 
-  return [ -pt[0], pt[1], pt[2] ];
-      });
-    } else if (asse === 1) {
-      return pointList.map( function(pt) { 
-  return [ pt[0], -pt[1], pt[2] ];
-      });
-    } else if (asse === 2) {
-      return pointList.map( function(pt) { 
-  return [ pt[0], pt[1], -pt[2] ];
-      });
-    }
-};
 
-PointUtils.traslaPunti = function(pointList, asse, qty) {
+
+Point.translate = function(pointList, asse, qty) {
     if (asse === 0) {
       return pointList.map( function(pt) { 
   return [ pt[0]+qty, pt[1], pt[2] ];
@@ -61,19 +46,19 @@ PointUtils.traslaPunti = function(pointList, asse, qty) {
     }
 };
 
-PointUtils.scalaPunti = function(pointList, scalamento) {
+Point.scale = function(pointList, scalamento) {
     return pointList.map( function(pt) { 
   return [ pt[0] * scalamento, pt[1], pt[2]];
     });
 };
 
-PointUtils.scaleAllPoints = function(pointList,scale){
+Point.scaleAllPoints = function(pointList,scale){
 	 return pointList.map(function(pt) { 
   return [ pt[0] * scale, pt[1]*scale, pt[2]*scale];
     });
 };
 
-PointUtils.scalaPuntiY = function(pointList, scalamento) {
+Point.scaleY = function(pointList, scalamento) {
     return pointList.map( function(pt) { 
   return [ pt[0], pt[1]*scalamento, pt[2]];
     });
@@ -216,7 +201,7 @@ var points = [[5,24],[6.1,23.8],[6.6,23],[6.8,21],[8.1,19.8],
 			[2.3,20],[3.3,20.8],[3.6,23],[4,23.7],[5,24]];
 
 points = points.map(function(p){return [p[0],p[1],0];});
-points = PointUtils.scaleAllPoints(points,0.05);
+points = Point.scaleAllPoints(points,0.05);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 profile = MAP(profile)(INTERVALS(1)(200));
@@ -581,17 +566,17 @@ var xBaseTimpano = 8.52;
 var zBaseTimpano = 3.55;
 var timpano = [];
 var pointsNS = [[0.2,0,0],[0.2,0.15,0],[0.15,0.2,0],[0.15,0.3,0],[0.2,0.4,0],[0.15,0.45,0],[0.15,0.55,0],[0.2,0.65,0],[0.1,0.72,0],[0.05,0.75,0],[0.05,0.85,0],[0.1,0.88,0],[0.2,0.9,0],[0.15,0.95,0],[0.15,1.05,0],[0.2,1.1,0],[0.2,1.51,0]];
-pointsNS = PointUtils.scalaPuntiY(pointsNS,0.5);
-var pointsNSR = PointUtils.ruotaPunti(pointsNS,-PI/4,1);
-var points = PointUtils.scalaPunti(pointsNS, SQRT(2));
-points = PointUtils.ruotaPunti(points,-PI/4,1);
-var points2 = PointUtils.ruotaPunti(points,-PI/2,1);
-points2 = PointUtils.traslaPunti(points2,0,xBaseTimpano);
-var points3 = PointUtils.ruotaPunti(pointsNSR,+ PI/4,1);
-points3 = PointUtils.traslaPunti(points3,2,zBaseTimpano);
-var points4 = PointUtils.ruotaPunti(pointsNSR,-PI/2-PI/4,1);
-points4 = PointUtils.traslaPunti(points4,0,xBaseTimpano);
-points4 = PointUtils.traslaPunti(points4,2,zBaseTimpano);
+pointsNS = Point.scaleY(pointsNS,0.5);
+var pointsNSR = Point.rotate(pointsNS,-PI/4,1);
+var points = Point.scale(pointsNS, SQRT(2));
+points = Point.rotate(points,-PI/4,1);
+var points2 = Point.rotate(points,-PI/2,1);
+points2 = Point.translate(points2,0,xBaseTimpano);
+var points3 = Point.rotate(pointsNSR,+ PI/4,1);
+points3 = Point.translate(points3,2,zBaseTimpano);
+var points4 = Point.rotate(pointsNSR,-PI/2-PI/4,1);
+points4 = Point.translate(points4,0,xBaseTimpano);
+points4 = Point.translate(points4,2,zBaseTimpano);
 ////
 
 ////
@@ -637,12 +622,12 @@ var hTriangolo = 2.5;
 var ipotenusa = SQRT((hTriangolo*hTriangolo) + (xBaseTriangolo/2*xBaseTriangolo/2));
 var alpha = Math.asin(hTriangolo/ipotenusa)+PI/4.8;
 var pointsNR = [[0,0,0.3],[0,0,0.1],[0,0.05,0.05],[0,0.1,0.1],[0,0.15,0.05],[0,0.2,0.1],[0,0.2,0.3]];
-pointsNR = PointUtils.traslaPunti(pointsNR,1,0.01);
-var points=PointUtils.ruotaPunti(pointsNR,-alpha,2);
-points = PointUtils.scalaPuntiY(points,1.5);
-var points2 = PointUtils.ruotaPunti(pointsNR,alpha,2);
-points2 = PointUtils.traslaPunti(points2,0,xBaseTriangolo);
-points2 = PointUtils.scalaPuntiY(points2,1.5);
+pointsNR = Point.translate(pointsNR,1,0.01);
+var points=Point.rotate(pointsNR,-alpha,2);
+points = Point.scaleY(points,1.5);
+var points2 = Point.rotate(pointsNR,alpha,2);
+points2 = Point.translate(points2,0,xBaseTriangolo);
+points2 = Point.scaleY(points2,1.5);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -659,11 +644,11 @@ var punto2Sfondo = points2[points2.length-1];
 
 //lati superiori
 var points = [[0,0.1,0.4],[0,0.1,0.1],[0,0.1,0.05],[0,0.15,0.1],[0,0.2,0.1],[0,0.25,0.05],[0,0.3,0.1],[0,0.35,0],[0,0.4,0.05],[0,0.4,0.1],[0,0.4,0.4]];
-points = PointUtils.traslaPunti(points,1,-0.088);
-points = PointUtils.traslaPunti(points,0,0.03);
-var points2 = PointUtils.traslaPunti(points,0,xBaseTriangolo/2);
-points2 = PointUtils.traslaPunti(points2,1,hTriangolo);
-var points3 = PointUtils.traslaPunti(points,0,xBaseTriangolo-0.05);
+points = Point.translate(points,1,-0.088);
+points = Point.translate(points,0,0.03);
+var points2 = Point.translate(points,0,xBaseTriangolo/2);
+points2 = Point.translate(points2,1,hTriangolo);
+var points3 = Point.translate(points,0,xBaseTriangolo-0.05);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -811,7 +796,7 @@ var ornProfile = NUBS(S0)(2)(makeKnots(ornPoints))(ornPoints);
 var fake = [0,0,0];
 var fakeProfile = NUBS(S0)(3)([0,0,0,1,1,1])([fake,fake]);
 var ornSurface = BEZIER(S1)([fakeProfile,ornProfile]);
-var ornPoints2 = PointUtils.traslaPunti(ornPoints,2,0.2);
+var ornPoints2 = Point.translate(ornPoints,2,0.2);
 var ornProfile2 = NUBS(S0)(2)(makeKnots(ornPoints2))(ornPoints2);
 var latOrnSurface = BEZIER(S1)([ornProfile,ornProfile2]);
 var ornament3 = [];
@@ -855,22 +840,22 @@ var buildCorniceDown = function(){
 var zBaseTimpano = 3.55;
 var corniceDown = [];
 var pointsNS = [[0.2,0,0],[0.2,0.15,0],[0.15,0.2,0],[0.15,0.3,0],[0.2,0.4,0],[0.15,0.45,0],[0.15,0.55,0],[0.2,0.65,0],[0.1,0.72,0],[0.05,0.75,0],[0.05,0.85,0],[0.1,0.88,0],[0.2,0.9,0],[0.15,0.95,0],[0.15,1.05,0],[0.2,1.1,0],[0.2,1.51,0]];
-pointsNS = PointUtils.scalaPuntiY(pointsNS,0.5);
-var pointsCornicione1 = PointUtils.ruotaPunti(pointsNS,-PI/4,1);
+pointsNS = Point.scaleY(pointsNS,0.5);
+var pointsCornicione1 = Point.rotate(pointsNS,-PI/4,1);
 var knots = makeKnots(pointsNS);
-var pointsCornicioneLeft1 = PointUtils.ruotaPunti(pointsCornicione1,-PI/2,1);
-pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,2,zBaseTimpano-0.15);
-pointsCornicione1 = PointUtils.traslaPunti(pointsCornicione1,0,0.1);
-var pointsCornicione2 = PointUtils.traslaPunti(pointsCornicione1,0,-3.805);
+var pointsCornicioneLeft1 = Point.rotate(pointsCornicione1,-PI/2,1);
+pointsCornicione1 = Point.translate(pointsCornicione1,2,zBaseTimpano-0.15);
+pointsCornicione1 = Point.translate(pointsCornicione1,0,0.1);
+var pointsCornicione2 = Point.translate(pointsCornicione1,0,-3.805);
 var profileCornicione1 = NUBS(S0)(2)(knots)(pointsCornicione1);
 var profileCornicione2 = NUBS(S0)(2)(knots)(pointsCornicione2);
 var cornicione = BEZIER(S1)([profileCornicione1,profileCornicione2]);
 cornicione = MAP(cornicione)(domain2d);
 corniceDown.push(cornicione);
 //cornicione left
-pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,2,zBaseTimpano-0.15);
-pointsCornicioneLeft1 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,xBaseTimpano-0.1);
-var pointsCornicioneLeft2 = PointUtils.traslaPunti(pointsCornicioneLeft1,0,3.81);
+pointsCornicioneLeft1 = Point.translate(pointsCornicioneLeft1,2,zBaseTimpano-0.15);
+pointsCornicioneLeft1 = Point.translate(pointsCornicioneLeft1,0,xBaseTimpano-0.1);
+var pointsCornicioneLeft2 = Point.translate(pointsCornicioneLeft1,0,3.81);
 var profileCornicioneLeft1 = NUBS(S0)(2)(knots)(pointsCornicioneLeft1);
 var profileCornicioneLeft2 = NUBS(S0)(2)(knots)(pointsCornicioneLeft2);
 var cornicioneLeft = BEZIER(S1)([profileCornicioneLeft1,profileCornicioneLeft2]);
@@ -888,10 +873,10 @@ var points = [[0.4,0,0],
 				[0.25,0,0],[0.22,0.02,0],[0.2,0.05,0],
 				[0.18,0.07,0],[0.1,0.1,0],[0.05,0.15,0],
 				[0.1,0.2,0],[0.25,0.2,0],[0.4,0.2,0]];
-var pointsLeft = PointUtils.ruotaPunti(points,-PI/2 - PI/4,1);
-points = PointUtils.ruotaPunti(points,-PI/4,1);
-points = PointUtils.traslaPunti(points,2,zBaseTimpano);
-var points2 = PointUtils.traslaPunti(points,0,-3.85);
+var pointsLeft = Point.rotate(points,-PI/2 - PI/4,1);
+points = Point.rotate(points,-PI/4,1);
+points = Point.translate(points,2,zBaseTimpano);
+var points2 = Point.translate(points,0,-3.85);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -900,9 +885,9 @@ corniceRight = MAP(corniceRight)(domain2d);
 cornice.push(corniceRight);
 
 //cornice left
-pointsLeft = PointUtils.traslaPunti(pointsLeft,2,zBaseTimpano);
-pointsLeft = PointUtils.traslaPunti(pointsLeft,0,xBaseTimpano-0.2);
-var points2 = PointUtils.traslaPunti(pointsLeft,0,4.06);
+pointsLeft = Point.translate(pointsLeft,2,zBaseTimpano);
+pointsLeft = Point.translate(pointsLeft,0,xBaseTimpano-0.2);
+var points2 = Point.translate(pointsLeft,0,4.06);
 var profileLeft1 = NUBS(S0)(2)(knots)(pointsLeft);
 var profileLeft2 = NUBS(S0)(2)(knots)(points2);
 var corniceLeft = BEZIER(S1)([profileLeft1,profileLeft2]);
@@ -919,13 +904,13 @@ var zBaseTimpano = 3.55;
 var pointsNR = [[0.4,0,0],[0.25,0,0],[0.22,0.02,0],
 				[0.2,0.05,0],[0.18,0.07,0],[0.1,0.1,0],[
 				0.05,0.15,0],[0.1,0.2,0]];
-var points = PointUtils.ruotaPunti(pointsNR,-PI/4,1);
-var points2 = PointUtils.ruotaPunti(points,-PI/2,1);
+var points = Point.rotate(pointsNR,-PI/4,1);
+var points2 = Point.rotate(points,-PI/2,1);
 
-points = PointUtils.traslaPunti(points,2,zBaseTimpano);
-points = PointUtils.traslaPunti(points,0,-3.85);
-points2 = PointUtils.traslaPunti(points2,0,xBaseTimpano-0.2+4.06);
-points2 = PointUtils.traslaPunti(points2,2,zBaseTimpano);
+points = Point.translate(points,2,zBaseTimpano);
+points = Point.translate(points,0,-3.85);
+points2 = Point.translate(points2,0,xBaseTimpano-0.2+4.06);
+points2 = Point.translate(points2,2,zBaseTimpano);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -963,12 +948,12 @@ var pointsNR = [[0,0,0.3],[0,0,0.1],[0,0.05,0.05],
 				[0,0.1,0.1],[0,0.15,0.05],[0,0.2,0.1],
 				[0,0.2,0.3]];
 
-pointsNR = PointUtils.traslaPunti(pointsNR,1,0.01);
-var points=PointUtils.ruotaPunti(pointsNR,-alpha,2);
-points = PointUtils.scalaPuntiY(points,1.5);
-var points2 = PointUtils.ruotaPunti(pointsNR,alpha,2);
-points2 = PointUtils.traslaPunti(points2,0,xBaseTriangle);
-points2 = PointUtils.scalaPuntiY(points2,1.5);
+pointsNR = Point.translate(pointsNR,1,0.01);
+var points=Point.rotate(pointsNR,-alpha,2);
+points = Point.scaleY(points,1.5);
+var points2 = Point.rotate(pointsNR,alpha,2);
+points2 = Point.translate(points2,0,xBaseTriangle);
+points2 = Point.scaleY(points2,1.5);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -984,11 +969,11 @@ frame.push(curve);
 var points = [[0,0.1,0.4],[0,0.1,0.1],[0,0.1,0.05],[0,0.15,0.1],
 				[0,0.2,0.1],[0,0.25,0.05],[0,0.3,0.1],[0,0.35,0],
 				[0,0.4,0.05],[0,0.4,0.1],[0,0.4,0.4]];
-points = PointUtils.traslaPunti(points,1,-0.088);
-points = PointUtils.traslaPunti(points,0,0.03);
-var points2 = PointUtils.traslaPunti(points,0,xBaseTriangle/2);
-points2 = PointUtils.traslaPunti(points2,1,hTriangle);
-var points3 = PointUtils.traslaPunti(points,0,xBaseTriangle-0.05);
+points = Point.translate(points,1,-0.088);
+points = Point.translate(points,0,0.03);
+var points2 = Point.translate(points,0,xBaseTriangle/2);
+points2 = Point.translate(points2,1,hTriangle);
+var points3 = Point.translate(points,0,xBaseTriangle-0.05);
 var knots = makeKnots(points);
 var profile = NUBS(S0)(2)(knots)(points);
 var profile2 = NUBS(S0)(2)(knots)(points2);
@@ -1495,26 +1480,31 @@ var roof = BEZIER(S1)([bRoofProf,upRoof]);
 var roof = MAP(roof)(domain2d);
 
 //dome
-var hDome = 6;
-var wDome = 6;
+var hDome = 5;
+var wDome = 5;
 var point1 = [11.5/12*wDome,0,0/15*hDome];
 var point2 = [11.5/12*wDome,0,2/15*hDome];
 var point3 = [12/12*wDome,0,2/15*hDome];
 var point4 = [12/12*wDome,0,2.8/15*hDome];
 var point5 = [12.2/12*wDome,0,3/15*hDome];
-var point6 = [9/12*wDome,0,4.5/15*hDome];
-var point7 = [9/12*wDome,0,4.8/15*hDome];
-var point8 = [9.2/12*wDome,0,5/15*hDome];
+var point51 = [11.8/12*wDome,0,4.5/15*hDome];
+//var point6 = [9/12*wDome,0,4.5/15*hDome];
+var point6 = [10.2/12*wDome,0,4.5/15*hDome];
+var point7 = [10.2/12*wDome,0,4.8/15*hDome];
+var point8 = [10.2/12*wDome,0,5/15*hDome];
+var point81 = [8.8/12*wDome,0,6.3/15*hDome];
 var point9 = [7/12*wDome,0,6.5/15*hDome];
 var point10 = [7/12*wDome,0,6.8/15*hDome];
 var point11 = [7.2/12*wDome,0,7/15*hDome];
+var point111 = [6.8/12*wDome,0,8/15*hDome];
 var point12 = [5/12*wDome,0,8.5/15*hDome];
 var point13 = [5/12*wDome,0,8.8/15*hDome];
 var point14 = [5.2/12*wDome,0,9/15*hDome];
+var point141 = [4.8/12*wDome,0,10/15*hDome];
 var point15 = [3/12*wDome,0,10.5/15*hDome];
 var point16 = [3/12*wDome,0,10.8/15*hDome];
 var point17 = [3.2/12*wDome,0,11/15*hDome];
-var pointS = [1.5/12*wDome,0,12/15*hDome];
+var pointS = [2.8/12*wDome,0,12/15*hDome];
 var point18 = [1/12*wDome,0,12.8/15*hDome];
 var point19 = [1/12*wDome,0,13.4/15*hDome];
 var point20 = [1.2/12*wDome,0,13.6/15*hDome];
@@ -1526,7 +1516,7 @@ var prof1 = NUBS(S0)(1)([0,0,1,2,3,4,4])([point1,point2,point3,point4,point5]);
 var sur1 = ROTATIONAL_SURFACE(prof1);
 sur1 = MAP(sur1)(domainR);
 noCRed.push(sur1);
-var prof2 = NUBS(S0)(1)([0,0,1,1])([point5,point6]);
+var prof2 = NUBS(S0)(2)([0,0,0,1,1,1])([point5,point51,point6]);
 var sur2 = ROTATIONAL_SURFACE(prof2);
 sur2 = MAP(sur2)(domainR);
 cRed.push(sur2);
@@ -1534,7 +1524,7 @@ var prof3 = NUBS(S0)(1)([0,0,1,2,2])([point6,point7,point8]);
 var sur3 = ROTATIONAL_SURFACE(prof3);
 sur3 = MAP(sur3)(domainR);
 noCRed.push(sur3);
-var prof4 = NUBS(S0)(1)([0,0,1,1])([point8,point9]);
+var prof4 = NUBS(S0)(2)([0,0,0,1,1,1])([point8,point81,point9]);
 var sur4 = ROTATIONAL_SURFACE(prof4);
 sur4 = MAP(sur4)(domainR);
 cRed.push(sur4);
@@ -1542,7 +1532,7 @@ var prof5 = NUBS(S0)(1)([0,0,1,2,2])([point9,point10,point11]);
 var sur5 = ROTATIONAL_SURFACE(prof5);
 sur5 = MAP(sur5)(domainR);
 noCRed.push(sur5);
-var prof6 = NUBS(S0)(1)([0,0,1,1])([point11,point12]);
+var prof6 = NUBS(S0)(2)([0,0,0,1,1,1])([point11,point111,point12]);
 var sur6 = ROTATIONAL_SURFACE(prof6);
 sur6 = MAP(sur6)(domainR);
 cRed.push(sur6);
@@ -1550,7 +1540,7 @@ var prof7 = NUBS(S0)(1)([0,0,1,2,2])([point12,point13,point14]);
 var sur7 = ROTATIONAL_SURFACE(prof7);
 sur7 = MAP(sur7)(domainR);
 noCRed.push(sur7);
-var prof8 = NUBS(S0)(1)([0,0,1,1])([point14,point15]);
+var prof8 = NUBS(S0)(2)([0,0,0,1,1,1])([point14,point141,point15]);
 var sur8 = ROTATIONAL_SURFACE(prof8);
 sur8 = MAP(sur8)(domainR);
 cRed.push(sur8);
